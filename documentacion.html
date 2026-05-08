@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<title>SmartFenix – Documentación Técnica</title>
+<style>
+  body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    line-height: 1.6;
+    color: #000;
+    background: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  .page {
+    width: 21cm;
+    min-height: 29.7cm;
+    margin: 0 auto;
+    padding: 2.5cm 2.5cm 2.5cm 2.5cm;
+    page-break-after: always;
+    box-sizing: border-box;
+  }
+
+  @media print {
+    .page { page-break-after: always; margin: 0; padding: 2cm; }
+    body { font-size: 11pt; }
+  }
+
+  /* ── PORTADA ── */
+  .portada {
+    text-align: center;
+    padding-top: 5cm;
+  }
+  .portada h1 {
+    font-size: 32pt;
+    font-weight: bold;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+  }
+  .portada .subtitulo {
+    font-size: 16pt;
+    margin-bottom: 30px;
+  }
+  .portada .linea {
+    border-top: 2px solid #000;
+    margin: 20px auto;
+    width: 60%;
+  }
+  .portada .info-tabla {
+    margin: 40px auto;
+    width: 70%;
+    border-collapse: collapse;
+    font-size: 12pt;
+  }
+  .portada .info-tabla td {
+    padding: 6px 12px;
+    text-align: left;
+  }
+  .portada .info-tabla td:first-child {
+    font-weight: bold;
+    width: 40%;
+  }
+
+  /* ── ÍNDICE ── */
+  .indice ul {
+    list-style: none;
+    padding: 0;
+    font-size: 12pt;
+  }
+  .indice ul li {
+    padding: 5px 0;
+    border-bottom: 1px dotted #aaa;
+    display: flex;
+    justify-content: space-between;
+  }
+  .indice ul li span { font-weight: normal; }
+
+  /* ── SECCIONES ── */
+  h1.titulo-seccion {
+    font-size: 16pt;
+    font-weight: bold;
+    border-bottom: 2px solid #000;
+    padding-bottom: 6px;
+    margin-bottom: 20px;
+    margin-top: 0;
+  }
+  h2 {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+  h3 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 16px;
+    margin-bottom: 6px;
+  }
+  p {
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+
+  /* ── TABLAS ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 20px 0;
+    font-size: 10.5pt;
+  }
+  th {
+    background-color: #e0e0e0;
+    border: 1px solid #555;
+    padding: 7px 10px;
+    text-align: left;
+    font-weight: bold;
+  }
+  td {
+    border: 1px solid #777;
+    padding: 6px 10px;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background-color: #f9f9f9; }
+
+  /* ── BLOQUES DE CÓDIGO ── */
+  pre {
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-left: 4px solid #555;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9.5pt;
+    padding: 12px 16px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 10px 0 16px 0;
+  }
+  code {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10pt;
+    background: #eee;
+    padding: 1px 4px;
+  }
+
+  /* ── NOTA / AVISO ── */
+  .nota {
+    background: #f0f0f0;
+    border-left: 4px solid #888;
+    padding: 10px 14px;
+    margin: 14px 0;
+    font-size: 11pt;
+  }
+  .nota b { display: block; margin-bottom: 4px; }
+
+  /* ── DIAGRAMA ER TEXTO ── */
+  .er-box {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10pt;
+    background: #f8f8f8;
+    border: 1px solid #aaa;
+    padding: 16px 20px;
+    margin: 12px 0;
+    white-space: pre;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ PORTADA ═══════════ -->
+<div class="page">
+  <div class="portada">
+    <h1>SMARTFENIX</h1>
+    <p class="subtitulo">Documentación Técnica del Sistema</p>
+    <div class="linea"></div>
+    <table class="info-tabla">
+      <tr><td>Proyecto:</td><td>SmartFenix API REST</td></tr>
+      <tr><td>Framework:</td><td>Spring Boot 3.2.5</td></tr>
+      <tr><td>Lenguaje:</td><td>Java 21</td></tr>
+      <tr><td>Base de datos:</td><td>MySQL 8.0 (Docker)</td></tr>
+      <tr><td>Puerto API:</td><td>8099</td></tr>
+      <tr><td>Puerto MySQL:</td><td>3308</td></tr>
+      <tr><td>Fecha:</td><td>Mayo 2026</td></tr>
+    </table>
+    <div class="linea"></div>
+    <p style="margin-top:40px; font-size:11pt; color:#333;">
+      Documento generado para el proyecto académico SmartFenix.<br/>
+      Incluye análisis E-R, diseño de base de datos, configuración y ejemplos de uso con Postman.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════ ÍNDICE ═══════════ -->
+<div class="page indice">
+  <h1 class="titulo-seccion">Índice de Contenidos</h1>
+  <ul>
+    <li><span>1. Análisis y Diagrama Entidad-Relación</span><span>3</span></li>
+    <li><span>2. Diseño de la Base de Datos</span><span>4</span></li>
+    <li><span>3. Conexión con la Base de Datos en Spring Boot</span><span>5</span></li>
+    <li><span>4. Alta de Registros (Endpoints POST)</span><span>6</span></li>
+    <li><span>5. Visualización de Datos (Endpoints GET)</span><span>7</span></li>
+    <li><span>6. Gestión de Registros (Endpoints PUT y DELETE)</span><span>8</span></li>
+  </ul>
+</div>
+
+<!-- ═══════════ SECCIÓN 1: ER ═══════════ -->
+<div class="page">
+  <h1 class="titulo-seccion">1. Análisis y Diagrama Entidad-Relación</h1>
+
+  <p>
+    El proyecto SmartFenix gestiona cuatro entidades principales: <b>Cliente</b>, <b>Proyecto</b>,
+    <b>Empleado</b> y <b>Tarea</b>. A continuación se describe cada entidad y las relaciones entre ellas.
+  </p>
+
+  <h2>1.1 Entidades del sistema</h2>
+  <table>
+    <thead><tr><th>Entidad</th><th>Descripción</th><th>Campos principales</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Cliente</b></td>
+        <td>Empresa o persona que contrata proyectos a SmartFenix</td>
+        <td>id, nombre, telefono, empresa</td>
+      </tr>
+      <tr>
+        <td><b>Proyecto</b></td>
+        <td>Trabajo asignado a un cliente con fechas de inicio y fin</td>
+        <td>id, nombre, fechaInicio, fechaFin, cliente_id</td>
+      </tr>
+      <tr>
+        <td><b>Empleado</b></td>
+        <td>Trabajador interno de SmartFenix con rol asignado</td>
+        <td>id, nombre, email, rol</td>
+      </tr>
+      <tr>
+        <td><b>Tarea</b></td>
+        <td>Unidad de trabajo dentro de un proyecto, asignada a un empleado</td>
+        <td>id, descripcion, estado, proyecto_id, empleado_id</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>1.2 Relaciones entre entidades</h2>
+  <table>
+    <thead><tr><th>Relación</th><th>Tipo</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Cliente → Proyecto</td>
+        <td>1 : N</td>
+        <td>Un cliente puede tener varios proyectos. Un proyecto pertenece a un único cliente.</td>
+      </tr>
+      <tr>
+        <td>Proyecto → Tarea</td>
+        <td>1 : N</td>
+        <td>Un proyecto puede tener varias tareas. Una tarea pertenece a un único proyecto.</td>
+      </tr>
+      <tr>
+        <td>Empleado → Tarea</td>
+        <td>1 : N</td>
+        <td>Un empleado puede tener asignadas varias tareas. Cada tarea tiene un único responsable.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>1.3 Diagrama E-R (representación textual)</h2>
+  <div class="er-box">+----------------+        +--------------------+
+|    CLIENTE     |        |      PROYECTO      |
++----------------+        +--------------------+
+| PK id          |1------N| PK id              |
+|    nombre      |        |    nombre          |
+|    telefono    |        |    fecha_inicio    |
+|    empresa     |        |    fecha_fin       |
++----------------+        | FK cliente_id      |
+                          +--------------------+
+                                    |
+                                    | 1
+                                    |
+                                    N
+                          +--------------------+        +----------------+
+                          |       TAREA        |        |    EMPLEADO    |
+                          +--------------------+        +----------------+
+                          | PK id              |N------1| PK id          |
+                          |    descripcion     |        |    nombre      |
+                          |    estado          |        |    email       |
+                          | FK proyecto_id     |        |    rol         |
+                          | FK empleado_id     |        +----------------+
+                          +--------------------+
+  </div>
+
+  <div class="nota">
+    <b>Nota sobre las cardinalities:</b>
+    Las anotaciones JPA utilizadas son <code>@ManyToOne</code> en las entidades Proyecto y Tarea,
+    con <code>@JoinColumn</code> para definir la columna de clave foránea en la base de datos.
+  </div>
+</div>
+
+<!-- ═══════════ SECCIÓN 2: BD ═══════════ -->
+<div class="page">
+  <h1 class="titulo-seccion">2. Diseño de la Base de Datos</h1>
+
+  <p>
+    Hibernate genera automáticamente las tablas en MySQL a partir de las anotaciones JPA definidas
+    en las clases del paquete <code>domain</code>. La configuración <code>ddl-auto=create</code>
+    recrea las tablas en cada arranque de la aplicación.
+  </p>
+
+  <h2>2.1 Tabla: <code>cliente</code></h2>
+  <table>
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td>id</td><td>BIGINT</td><td>PRIMARY KEY, AUTO_INCREMENT</td><td>Identificador único del cliente</td></tr>
+      <tr><td>nombre</td><td>VARCHAR(255)</td><td>NOT NULL</td><td>Nombre del cliente (obligatorio)</td></tr>
+      <tr><td>telefono</td><td>VARCHAR(255)</td><td>–</td><td>Teléfono de contacto (opcional)</td></tr>
+      <tr><td>empresa</td><td>VARCHAR(255)</td><td>–</td><td>Nombre de la empresa (opcional)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2.2 Tabla: <code>proyecto</code></h2>
+  <table>
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td>id</td><td>BIGINT</td><td>PRIMARY KEY, AUTO_INCREMENT</td><td>Identificador único del proyecto</td></tr>
+      <tr><td>nombre</td><td>VARCHAR(255)</td><td>NOT NULL</td><td>Nombre del proyecto (obligatorio)</td></tr>
+      <tr><td>fecha_inicio</td><td>DATE</td><td>–</td><td>Fecha de inicio del proyecto</td></tr>
+      <tr><td>fecha_fin</td><td>DATE</td><td>–</td><td>Fecha de finalización prevista</td></tr>
+      <tr><td>cliente_id</td><td>BIGINT</td><td>FOREIGN KEY → cliente(id)</td><td>Cliente propietario del proyecto</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2.3 Tabla: <code>empleado</code></h2>
+  <table>
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td>id</td><td>BIGINT</td><td>PRIMARY KEY, AUTO_INCREMENT</td><td>Identificador único del empleado</td></tr>
+      <tr><td>nombre</td><td>VARCHAR(255)</td><td>NOT NULL</td><td>Nombre completo (obligatorio)</td></tr>
+      <tr><td>email</td><td>VARCHAR(255)</td><td>NOT NULL, UNIQUE</td><td>Email corporativo (único en la BD)</td></tr>
+      <tr><td>rol</td><td>VARCHAR(255)</td><td>–</td><td>Rol o cargo del empleado (opcional)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2.4 Tabla: <code>tarea</code></h2>
+  <table>
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td>id</td><td>BIGINT</td><td>PRIMARY KEY, AUTO_INCREMENT</td><td>Identificador único de la tarea</td></tr>
+      <tr><td>descripcion</td><td>VARCHAR(255)</td><td>NOT NULL</td><td>Descripción de la tarea (obligatorio)</td></tr>
+      <tr><td>estado</td><td>VARCHAR(255)</td><td>–</td><td>Estado: Pendiente / En progreso / Completada</td></tr>
+      <tr><td>proyecto_id</td><td>BIGINT</td><td>FOREIGN KEY → proyecto(id)</td><td>Proyecto al que pertenece la tarea</td></tr>
+      <tr><td>empleado_id</td><td>BIGINT</td><td>FOREIGN KEY → empleado(id)</td><td>Empleado responsable de la tarea</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2.5 Restricciones destacadas</h2>
+  <table>
+    <thead><tr><th>Entidad</th><th>Campo</th><th>Restricción</th><th>Motivo</th></tr></thead>
+    <tbody>
+      <tr><td>Cliente</td><td>nombre</td><td>NOT NULL</td><td>Anotación <code>@NotBlank</code> en la entidad Java</td></tr>
+      <tr><td>Empleado</td><td>email</td><td>NOT NULL, UNIQUE</td><td>Anotación <code>@Email</code> + <code>unique=true</code></td></tr>
+      <tr><td>Proyecto</td><td>cliente_id</td><td>FOREIGN KEY</td><td>Relación <code>@ManyToOne</code> con Cliente</td></tr>
+      <tr><td>Tarea</td><td>proyecto_id</td><td>FOREIGN KEY</td><td>Relación <code>@ManyToOne</code> con Proyecto</td></tr>
+      <tr><td>Tarea</td><td>empleado_id</td><td>FOREIGN KEY</td><td>Relación <code>@ManyToOne</code> con Empleado</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════ SECCIÓN 3: CONEXIÓN ═══════════ -->
+<div class="page">
+  <h1 class="titulo-seccion">3. Conexión con la Base de Datos en Spring Boot</h1>
+
+  <p>
+    Spring Boot conecta con MySQL a través del fichero <code>application.properties</code>.
+    El contenedor Docker expone MySQL en el puerto <b>3308</b> del host (mapeado al 3306 interno del contenedor).
+  </p>
+
+  <h2>3.1 Fichero application.properties</h2>
+  <p>Ubicación: <code>src/main/resources/application.properties</code></p>
+  <pre>spring.datasource.url=jdbc:mysql://localhost:3308/smartfenix_db?createDatabaseIfNotExist=true
+spring.datasource.username=root
+spring.datasource.password=root1234
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+server.port=8099</pre>
+
+  <h2>3.2 Explicación de cada propiedad</h2>
+  <table>
+    <thead><tr><th>Propiedad</th><th>Valor</th><th>Explicación</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>datasource.url</td>
+        <td>jdbc:mysql://localhost:3308/smartfenix_db</td>
+        <td>Dirección del servidor MySQL. El parámetro <code>createDatabaseIfNotExist=true</code> crea la base de datos automáticamente si no existe.</td>
+      </tr>
+      <tr>
+        <td>datasource.username</td>
+        <td>root</td>
+        <td>Usuario de MySQL configurado en Docker.</td>
+      </tr>
+      <tr>
+        <td>datasource.password</td>
+        <td>root1234</td>
+        <td>Contraseña del usuario root definida en la variable de entorno MYSQL_ROOT_PASSWORD del contenedor.</td>
+      </tr>
+      <tr>
+        <td>driver-class-name</td>
+        <td>com.mysql.cj.jdbc.Driver</td>
+        <td>Driver JDBC para MySQL 8.x (incluido en la dependencia <code>mysql-connector-j</code> del pom.xml).</td>
+      </tr>
+      <tr>
+        <td>ddl-auto</td>
+        <td>create</td>
+        <td>Hibernate elimina y recrea las tablas en cada arranque. Útil en desarrollo; en producción se usa <em>update</em> o <em>validate</em>.</td>
+      </tr>
+      <tr>
+        <td>show-sql</td>
+        <td>true</td>
+        <td>Imprime en consola las sentencias SQL generadas por Hibernate.</td>
+      </tr>
+      <tr>
+        <td>server.port</td>
+        <td>8099</td>
+        <td>Puerto en el que la API REST escucha peticiones HTTP.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3.3 Docker Compose (compose.yaml)</h2>
+  <p>Se levanta con el comando <code>docker compose up -d</code> desde la raíz del proyecto:</p>
+  <pre>version: '3.8'
+services:
+  mysql_server:
+    image: mysql:8.0
+    container_name: mysql_smartfenix_new
+    ports:
+      - "3308:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root1234
+      - MYSQL_DATABASE=smartfenix_db
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+  phpmyadmin_web:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin_smartfenix_new
+    ports:
+      - "8098:80"
+    environment:
+      - PMA_HOST=mysql_server
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=root1234
+    depends_on:
+      - mysql_server</pre>
+
+  <div class="nota">
+    <b>Acceso a phpMyAdmin:</b>
+    Una vez levantado Docker, se puede administrar la base de datos visualmente en <code>http://localhost:8098</code>
+    con el usuario <code>root</code> y contraseña <code>root1234</code>.
+  </div>
+</div>
+
+<!-- ═══════════ SECCIÓN 4: POST ═══════════ -->
+<div class="page">
+  <h1 class="titulo-seccion">4. Alta de Registros — Endpoints POST</h1>
+
+  <p>
+    Los endpoints POST permiten crear nuevos registros en la base de datos. Se debe enviar un JSON
+    en el cuerpo de la petición con la cabecera <code>Content-Type: application/json</code>.
+    La respuesta exitosa devuelve el objeto creado con código HTTP <b>201 Created</b>.
+  </p>
+
+  <h2>4.1 Crear Cliente</h2>
+  <p><b>URL:</b> POST <code>http://localhost:8099/api/clientes</code></p>
+  <p><b>Campos obligatorios:</b> nombre</p>
+  <p><b>Body (JSON):</b></p>
+  <pre>{
+  "nombre": "Empresa Gamma",
+  "telefono": "666112233",
+  "empresa": "Gamma Digital SL"
+}</pre>
+  <p><b>Respuesta 201:</b></p>
+  <pre>{
+  "id": 3,
+  "nombre": "Empresa Gamma",
+  "telefono": "666112233",
+  "empresa": "Gamma Digital SL"
+}</pre>
+
+  <h2>4.2 Crear Empleado</h2>
+  <p><b>URL:</b> POST <code>http://localhost:8099/api/empleados</code></p>
+  <p><b>Campos obligatorios:</b> nombre, email (debe ser un email válido y único)</p>
+  <pre>{
+  "nombre": "Luis Fernández",
+  "email": "luis.fernandez@smartfenix.com",
+  "rol": "Arquitecto de Software"
+}</pre>
+
+  <h2>4.3 Crear Proyecto</h2>
+  <p><b>URL:</b> POST <code>http://localhost:8099/api/proyectos</code></p>
+  <p><b>Campos obligatorios:</b> nombre. El campo <code>cliente</code> debe referenciar un cliente existente.</p>
+  <pre>{
+  "nombre": "Plataforma E-Learning",
+  "fechaInicio": "2026-06-01",
+  "fechaFin": "2026-12-31",
+  "cliente": { "id": 1 }
+}</pre>
+
+  <h2>4.4 Crear Tarea</h2>
+  <p><b>URL:</b> POST <code>http://localhost:8099/api/tareas</code></p>
+  <p><b>Campos obligatorios:</b> descripcion. Los campos <code>proyecto</code> y <code>empleado</code> deben referenciar registros existentes.</p>
+  <pre>{
+  "descripcion": "Desarrollar módulo de login OAuth2",
+  "estado": "Pendiente",
+  "proyecto": { "id": 1 },
+  "empleado": { "id": 2 }
+}</pre>
+
+  <div class="nota">
+    <b>Configuración en Postman:</b>
+    Seleccionar método POST, introducir la URL y en la pestaña <b>Body</b> seleccionar
+    <b>raw → JSON</b>. Pegar el JSON del ejemplo y pulsar Send.
+  </div>
+</div>
+
+<!-- ═══════════ SECCIÓN 5: GET ═══════════ -->
+<div class="page">
+  <h1 class="titulo-seccion">5. Visualización de Datos — Endpoints GET</h1>
+
+  <p>
+    Los endpoints GET permiten consultar los registros almacenados en la base de datos. No requieren
+    body en la petición. Devuelven <b>200 OK</b> con un JSON, o <b>404 Not Found</b> si el recurso
+    solicitado no existe.
+  </p>
+
+  <h2>5.1 Listado de endpoints GET</h2>
+  <table>
+    <thead><tr><th>URL</th><th>Descripción</th><th>Respuesta</th></tr></thead>
+    <tbody>
+      <tr><td>GET /api/clientes</td><td>Lista todos los clientes</td><td>Array JSON · 200 OK</td></tr>
+      <tr><td>GET /api/clientes/{id}</td><td>Obtiene un cliente por su ID</td><td>Objeto JSON · 200 / 404</td></tr>
+      <tr><td>GET /api/empleados</td><td>Lista todos los empleados</td><td>Array JSON · 200 OK</td></tr>
+      <tr><td>GET /api/empleados/{id}</td><td>Obtiene un empleado por su ID</td><td>Objeto JSON · 200 / 404</td></tr>
+      <tr><td>GET /api/proyectos</td><td>Lista todos los proyectos</td><td>Array JSON · 200 OK</td></tr>
+      <tr><td>GET /api/proyectos/{id}</td><td>Obtiene un proyecto por su ID</td><td>Objeto JSON · 200 / 404</td></tr>
+      <tr><td>GET /api/tareas</td><td>Lista todas las tareas</td><td>Array JSON · 200 OK</td></tr>
+      <tr><td>GET /api/tareas/{id}</td><td>Obtiene una tarea por su ID</td><td>Objeto JSON · 200 / 404</td></tr>
+    </tbody>
+  </table>
+
+  <h2>5.2 Ejemplo: GET /api/clientes</h2>
+  <pre>[
+  {
+    "id": 1,
+    "nombre": "Tech Global",
+    "telefono": "600123456",
+    "empresa": "Tech Global Corp"
+  },
+  {
+    "id": 2,
+    "nombre": "Innova Solutions",
+    "telefono": "600987654",
+    "empresa": "Innova SL"
+  }
+]</pre>
+
+  <h2>5.3 Ejemplo: GET /api/tareas/1</h2>
+  <pre>{
+  "id": 1,
+  "descripcion": "Configurar base de datos AWS",
+  "estado": "En progreso",
+  "proyecto": {
+    "id": 1,
+    "nombre": "Migración Cloud",
+    "fechaInicio": "2026-04-27",
+    "fechaFin": "2026-06-06",
+    "cliente": {
+      "id": 1,
+      "nombre": "Tech Global",
+      "telefono": "600123456",
+      "empresa": "Tech Global Corp"
+    }
+  },
+  "empleado": {
+    "id": 1,
+    "nombre": "Ana García",
+    "email": "ana.garcia@smartfenix.com",
+    "rol": "Desarrolladora Backend"
+  }
+}</pre>
+
+  <div class="nota">
+    <b>Datos iniciales (DataLoader):</b>
+    Al arrancar la aplicación, si la base de datos está vacía, se insertan automáticamente
+    2 clientes, 2 proyectos, 3 empleados y 3 tareas de ejemplo. Estos datos están disponibles
+    inmediatamente para probar los endpoints GET sin necesidad de crear registros manualmente.
+  </div>
+</div>
+
+<!-- ═══════════ SECCIÓN 6: PUT / DELETE ═══════════ -->
+<div class="page">
+  <h1 class="titulo-seccion">6. Gestión de Registros — Endpoints PUT y DELETE</h1>
+
+  <h2>6.1 Actualizar registros — PUT</h2>
+  <p>
+    El método PUT recibe el <b>ID del registro en la URL</b> y el <b>objeto completo actualizado en el body</b>.
+    Devuelve el objeto modificado con código <b>200 OK</b>, o <b>404 Not Found</b> si no existe.
+  </p>
+
+  <h3>Actualizar Cliente — PUT /api/clientes/{id}</h3>
+  <p>Ejemplo: actualizar el cliente con ID = 1</p>
+  <pre>URL: PUT http://localhost:8099/api/clientes/1
+
+Body:
+{
+  "nombre": "Tech Global Internacional",
+  "telefono": "699000111",
+  "empresa": "Tech Global Corp Internacional"
+}</pre>
+
+  <h3>Actualizar Empleado — PUT /api/empleados/{id}</h3>
+  <pre>URL: PUT http://localhost:8099/api/empleados/2
+
+Body:
+{
+  "nombre": "Carlos López",
+  "email": "carlos.lopez@smartfenix.com",
+  "rol": "Director de Operaciones"
+}</pre>
+
+  <h3>Actualizar Proyecto — PUT /api/proyectos/{id}</h3>
+  <pre>URL: PUT http://localhost:8099/api/proyectos/1
+
+Body:
+{
+  "nombre": "Migración Cloud v2",
+  "fechaInicio": "2026-05-01",
+  "fechaFin": "2026-07-31",
+  "cliente": { "id": 1 }
+}</pre>
+
+  <h3>Actualizar Tarea — PUT /api/tareas/{id}</h3>
+  <pre>URL: PUT http://localhost:8099/api/tareas/1
+
+Body:
+{
+  "descripcion": "Configurar base de datos AWS",
+  "estado": "Completada",
+  "proyecto": { "id": 1 },
+  "empleado": { "id": 1 }
+}</pre>
+
+  <h2>6.2 Eliminar registros — DELETE</h2>
+  <p>
+    El método DELETE recibe únicamente el <b>ID en la URL</b>, sin body.
+    Devuelve <b>204 No Content</b> si se elimina correctamente,
+    o <b>404 Not Found</b> si el registro no existe.
+  </p>
+
+  <table>
+    <thead><tr><th>URL</th><th>Respuesta éxito</th><th>Respuesta error</th></tr></thead>
+    <tbody>
+      <tr><td>DELETE /api/clientes/{id}</td><td>204 No Content</td><td>404 Not Found</td></tr>
+      <tr><td>DELETE /api/proyectos/{id}</td><td>204 No Content</td><td>404 Not Found</td></tr>
+      <tr><td>DELETE /api/empleados/{id}</td><td>204 No Content</td><td>404 Not Found</td></tr>
+      <tr><td>DELETE /api/tareas/{id}</td><td>204 No Content</td><td>404 Not Found</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Ejemplo DELETE en Postman</h3>
+  <pre>Método: DELETE
+URL:    http://localhost:8099/api/tareas/3
+Body:   (vacío, no se necesita)
+
+Respuesta si existe:    HTTP 204 No Content  (body vacío)
+Respuesta si no existe: HTTP 404 Not Found</pre>
+
+  <div class="nota">
+    <b>Orden recomendado para eliminar sin errores de integridad referencial:</b><br/>
+    1. Eliminar primero las <b>Tareas</b> (dependen de Proyecto y Empleado)<br/>
+    2. Eliminar los <b>Proyectos</b> (dependen de Cliente)<br/>
+    3. Eliminar los <b>Clientes</b> y <b>Empleados</b> (sin dependencias)
+  </div>
+
+  <h2>6.3 Resumen completo de todos los endpoints</h2>
+  <table>
+    <thead><tr><th>Entidad</th><th>GET todos</th><th>GET por ID</th><th>POST</th><th>PUT</th><th>DELETE</th></tr></thead>
+    <tbody>
+      <tr><td>Cliente</td><td>/api/clientes</td><td>/api/clientes/{id}</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Proyecto</td><td>/api/proyectos</td><td>/api/proyectos/{id}</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Empleado</td><td>/api/empleados</td><td>/api/empleados/{id}</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Tarea</td><td>/api/tareas</td><td>/api/tareas/{id}</td><td>✓</td><td>✓</td><td>✓</td></tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top: 40px; text-align: center; font-size: 10pt; color: #555;">
+    — Fin del documento — SmartFenix API · Spring Boot 3.2.5 · Java 21 · Mayo 2026 —
+  </p>
+</div>
+
+</body>
+</html>
