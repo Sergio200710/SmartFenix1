@@ -15,7 +15,8 @@ public class ClienteServiceTest {
     @Autowired
     private ClienteService clienteService;
 
-    // CASO DE PRUEBA: Alta de cliente - comprobar que el cliente se guarda correctamente en la base de datos
+    // CASO DE PRUEBA: Alta de cliente - comprobar que el cliente se guarda
+    // correctamente en la base de datos
     @Test
     public void testCrearCliente() {
         Cliente cliente = Cliente.builder()
@@ -31,7 +32,8 @@ public class ClienteServiceTest {
         assertEquals("Amazon Web Services", guardado.getEmpresa());
     }
 
-    // CASO DE PRUEBA: Búsqueda de cliente por ID - comprobar que un cliente se recupera correctamente si existe
+    // CASO DE PRUEBA: Búsqueda de cliente por ID - comprobar que un cliente se
+    // recupera correctamente si existe
     @Test
     public void testBuscarCliente() {
         Cliente cliente = Cliente.builder()
@@ -47,7 +49,8 @@ public class ClienteServiceTest {
         assertEquals("Sony", encontrado.get().getNombre());
     }
 
-    // CASO DE PRUEBA: Actualización de cliente - comprobar que los campos modificados se actualizan correctamente
+    // CASO DE PRUEBA: Actualización de cliente - comprobar que los campos
+    // modificados se actualizan correctamente
     @Test
     public void testActualizarCliente() {
         Cliente cliente = Cliente.builder()

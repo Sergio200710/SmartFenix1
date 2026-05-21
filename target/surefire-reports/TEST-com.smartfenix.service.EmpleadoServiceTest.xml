@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.smartfenix.service.ProyectoServiceTest" time="0.076" tests="3" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.smartfenix.service.EmpleadoServiceTest" time="0.073" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -60,39 +60,33 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testBuscarProyecto" classname="com.smartfenix.service.ProyectoServiceTest" time="0.031">
-    <system-out><![CDATA[2026-05-21T12:48:33.873+02:00 DEBUG 20955 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [ProyectoServiceTest]: using SpringBootContextLoader
-2026-05-21T12:48:33.873+02:00  INFO 20955 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.smartfenix.service.ProyectoServiceTest]: ProyectoServiceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-05-21T12:48:33.873+02:00 DEBUG 20955 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Using ContextCustomizerFactory implementations for test class [ProyectoServiceTest]: [ImportsContextCustomizerFactory, ExcludeFilterContextCustomizerFactory, HttpGraphQlTesterContextCustomizerFactory, DuplicateJsonObjectContextCustomizerFactory, MockitoContextCustomizerFactory, TestRestTemplateContextCustomizerFactory, WebTestClientContextCustomizerFactory, OverrideAutoConfigurationContextCustomizerFactory, ObservabilityContextCustomizerFactory, TypeExcludeFiltersContextCustomizerFactory, PropertyMappingContextCustomizerFactory, WebDriverContextCustomizerFactory, MockServerContainerContextCustomizerFactory, DynamicPropertiesContextCustomizerFactory]
-2026-05-21T12:48:33.874+02:00 DEBUG 20955 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Using ContextCustomizers for test class [ProyectoServiceTest]: [ExcludeFilterContextCustomizer, DuplicateJsonObjectContextCustomizer, MockitoContextCustomizer, TestRestTemplateContextCustomizer, DisableObservabilityContextCustomizer, PropertyMappingContextCustomizer, WebDriverContextCustomizer]
-2026-05-21T12:48:33.874+02:00  INFO 20955 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.smartfenix.SmartFenixApplication for test class com.smartfenix.service.ProyectoServiceTest
-2026-05-21T12:48:33.875+02:00 DEBUG 20955 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners for test class [ProyectoServiceTest]: [ServletTestExecutionListener, DirtiesContextBeforeModesTestExecutionListener, ApplicationEventsTestExecutionListener, MockitoTestExecutionListener, DependencyInjectionTestExecutionListener, DirtiesContextTestExecutionListener, TransactionalTestExecutionListener, SqlScriptsTestExecutionListener, EventPublishingTestExecutionListener, ResetMocksTestExecutionListener, RestDocsTestExecutionListener, MockRestServiceServerResetTestExecutionListener, MockMvcPrintOnlyOnFailureTestExecutionListener, WebDriverTestExecutionListener, MockWebServiceServerTestExecutionListener]
-2026-05-21T12:48:33.879+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : insert into cliente (empresa,nombre,telefono) values (?,?,?)
-Hibernate: insert into cliente (empresa,nombre,telefono) values (?,?,?)
-2026-05-21T12:48:33.897+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : insert into proyecto (cliente_id,fecha_fin,fecha_inicio,nombre) values (?,?,?,?)
-Hibernate: insert into proyecto (cliente_id,fecha_fin,fecha_inicio,nombre) values (?,?,?,?)
-2026-05-21T12:48:33.903+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : select p1_0.id,p1_0.cliente_id,p1_0.fecha_fin,p1_0.fecha_inicio,p1_0.nombre from proyecto p1_0 where p1_0.id=?
-Hibernate: select p1_0.id,p1_0.cliente_id,p1_0.fecha_fin,p1_0.fecha_inicio,p1_0.nombre from proyecto p1_0 where p1_0.id=?
+  <testcase name="testCrearEmpleado" classname="com.smartfenix.service.EmpleadoServiceTest" time="0.014">
+    <system-out><![CDATA[2026-05-21T12:48:33.949+02:00 DEBUG 20955 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [EmpleadoServiceTest]: using SpringBootContextLoader
+2026-05-21T12:48:33.950+02:00  INFO 20955 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.smartfenix.service.EmpleadoServiceTest]: EmpleadoServiceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-05-21T12:48:33.950+02:00 DEBUG 20955 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Using ContextCustomizerFactory implementations for test class [EmpleadoServiceTest]: [ImportsContextCustomizerFactory, ExcludeFilterContextCustomizerFactory, HttpGraphQlTesterContextCustomizerFactory, DuplicateJsonObjectContextCustomizerFactory, MockitoContextCustomizerFactory, TestRestTemplateContextCustomizerFactory, WebTestClientContextCustomizerFactory, OverrideAutoConfigurationContextCustomizerFactory, ObservabilityContextCustomizerFactory, TypeExcludeFiltersContextCustomizerFactory, PropertyMappingContextCustomizerFactory, WebDriverContextCustomizerFactory, MockServerContainerContextCustomizerFactory, DynamicPropertiesContextCustomizerFactory]
+2026-05-21T12:48:33.951+02:00 DEBUG 20955 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Using ContextCustomizers for test class [EmpleadoServiceTest]: [ExcludeFilterContextCustomizer, DuplicateJsonObjectContextCustomizer, MockitoContextCustomizer, TestRestTemplateContextCustomizer, DisableObservabilityContextCustomizer, PropertyMappingContextCustomizer, WebDriverContextCustomizer]
+2026-05-21T12:48:33.951+02:00  INFO 20955 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.smartfenix.SmartFenixApplication for test class com.smartfenix.service.EmpleadoServiceTest
+2026-05-21T12:48:33.952+02:00 DEBUG 20955 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners for test class [EmpleadoServiceTest]: [ServletTestExecutionListener, DirtiesContextBeforeModesTestExecutionListener, ApplicationEventsTestExecutionListener, MockitoTestExecutionListener, DependencyInjectionTestExecutionListener, DirtiesContextTestExecutionListener, TransactionalTestExecutionListener, SqlScriptsTestExecutionListener, EventPublishingTestExecutionListener, ResetMocksTestExecutionListener, RestDocsTestExecutionListener, MockRestServiceServerResetTestExecutionListener, MockMvcPrintOnlyOnFailureTestExecutionListener, WebDriverTestExecutionListener, MockWebServiceServerTestExecutionListener]
+2026-05-21T12:48:33.956+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : insert into empleado (email,nombre,rol) values (?,?,?)
+Hibernate: insert into empleado (email,nombre,rol) values (?,?,?)
 ]]></system-out>
   </testcase>
-  <testcase name="testCrearProyecto" classname="com.smartfenix.service.ProyectoServiceTest" time="0.014">
-    <system-out><![CDATA[2026-05-21T12:48:33.911+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : insert into cliente (empresa,nombre,telefono) values (?,?,?)
-Hibernate: insert into cliente (empresa,nombre,telefono) values (?,?,?)
-2026-05-21T12:48:33.917+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : insert into proyecto (cliente_id,fecha_fin,fecha_inicio,nombre) values (?,?,?,?)
-Hibernate: insert into proyecto (cliente_id,fecha_fin,fecha_inicio,nombre) values (?,?,?,?)
+  <testcase name="testActualizarEmpleado" classname="com.smartfenix.service.EmpleadoServiceTest" time="0.029">
+    <system-out><![CDATA[2026-05-21T12:48:33.975+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : insert into empleado (email,nombre,rol) values (?,?,?)
+Hibernate: insert into empleado (email,nombre,rol) values (?,?,?)
+2026-05-21T12:48:33.982+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : select e1_0.id,e1_0.email,e1_0.nombre,e1_0.rol from empleado e1_0 where e1_0.id=?
+Hibernate: select e1_0.id,e1_0.email,e1_0.nombre,e1_0.rol from empleado e1_0 where e1_0.id=?
+2026-05-21T12:48:33.986+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : select e1_0.id,e1_0.email,e1_0.nombre,e1_0.rol from empleado e1_0 where e1_0.id=?
+Hibernate: select e1_0.id,e1_0.email,e1_0.nombre,e1_0.rol from empleado e1_0 where e1_0.id=?
+2026-05-21T12:48:33.988+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : update empleado set email=?,nombre=?,rol=? where id=?
+Hibernate: update empleado set email=?,nombre=?,rol=? where id=?
 ]]></system-out>
   </testcase>
-  <testcase name="testActualizarProyecto" classname="com.smartfenix.service.ProyectoServiceTest" time="0.024">
-    <system-out><![CDATA[2026-05-21T12:48:33.926+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : insert into cliente (empresa,nombre,telefono) values (?,?,?)
-Hibernate: insert into cliente (empresa,nombre,telefono) values (?,?,?)
-2026-05-21T12:48:33.932+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : insert into proyecto (cliente_id,fecha_fin,fecha_inicio,nombre) values (?,?,?,?)
-Hibernate: insert into proyecto (cliente_id,fecha_fin,fecha_inicio,nombre) values (?,?,?,?)
-2026-05-21T12:48:33.938+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : select p1_0.id,p1_0.cliente_id,p1_0.fecha_fin,p1_0.fecha_inicio,p1_0.nombre from proyecto p1_0 where p1_0.id=?
-Hibernate: select p1_0.id,p1_0.cliente_id,p1_0.fecha_fin,p1_0.fecha_inicio,p1_0.nombre from proyecto p1_0 where p1_0.id=?
-2026-05-21T12:48:33.940+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : select p1_0.id,p1_0.cliente_id,p1_0.fecha_fin,p1_0.fecha_inicio,p1_0.nombre from proyecto p1_0 where p1_0.id=?
-Hibernate: select p1_0.id,p1_0.cliente_id,p1_0.fecha_fin,p1_0.fecha_inicio,p1_0.nombre from proyecto p1_0 where p1_0.id=?
-2026-05-21T12:48:33.942+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : update proyecto set cliente_id=?,fecha_fin=?,fecha_inicio=?,nombre=? where id=?
-Hibernate: update proyecto set cliente_id=?,fecha_fin=?,fecha_inicio=?,nombre=? where id=?
+  <testcase name="testBuscarEmpleado" classname="com.smartfenix.service.EmpleadoServiceTest" time="0.023">
+    <system-out><![CDATA[2026-05-21T12:48:34.007+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : insert into empleado (email,nombre,rol) values (?,?,?)
+Hibernate: insert into empleado (email,nombre,rol) values (?,?,?)
+2026-05-21T12:48:34.018+02:00 DEBUG 20955 --- [           main] org.hibernate.SQL                        : select e1_0.id,e1_0.email,e1_0.nombre,e1_0.rol from empleado e1_0 where e1_0.id=?
+Hibernate: select e1_0.id,e1_0.email,e1_0.nombre,e1_0.rol from empleado e1_0 where e1_0.id=?
 ]]></system-out>
   </testcase>
 </testsuite>
