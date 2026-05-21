@@ -1,10 +1,10 @@
-# 🦊 SmartFenix API
+# SmartFenix API
 
 > API REST construida con **Spring Boot 3.2.5** para la gestión integral de proyectos, tareas, empleados y clientes.
 
 ---
 
-## 📋 Índice
+## Índice
 
 1. [Descripción del proyecto](#-descripción-del-proyecto)
 2. [Tecnologías utilizadas](#-tecnologías-utilizadas)
@@ -19,20 +19,20 @@
 
 ---
 
-## 📖 Descripción del proyecto
+## Descripción del proyecto
 
 **SmartFenix** es una API REST desarrollada con Spring Boot que permite gestionar de forma centralizada:
 
-- 👥 **Clientes** — Registro y gestión de clientes de la empresa
-- 👷 **Empleados** — Control del personal y sus asignaciones
-- 📁 **Proyectos** — Seguimiento del ciclo de vida de los proyectos
-- ✅ **Tareas** — Gestión de tareas asociadas a proyectos y empleados
+-**Clientes** — Registro y gestión de clientes de la empresa
+-**Empleados** — Control del personal y sus asignaciones
+-**Proyectos** — Seguimiento del ciclo de vida de los proyectos
+-**Tareas** — Gestión de tareas asociadas a proyectos y empleados
 
 La aplicación utiliza **MySQL** como base de datos relacional, orquestada mediante **Docker Compose**, y expone una API REST con arquitectura en capas (Controller → Service → Repository → Domain).
 
 ---
 
-## 🛠️ Tecnologías utilizadas
+## Tecnologías utilizadas
 
 | Tecnología               | Versión     | Uso                              |
 |--------------------------|-------------|----------------------------------|
@@ -48,7 +48,7 @@ La aplicación utiliza **MySQL** como base de datos relacional, orquestada media
 
 ---
 
-## ✅ Requisitos previos
+## Requisitos previos
 
 Antes de arrancar el proyecto, asegúrate de tener instalado lo siguiente:
 
@@ -75,7 +75,7 @@ Antes de arrancar el proyecto, asegúrate de tener instalado lo siguiente:
 
 ---
 
-## ⚙️ Configuración del entorno
+## Configuración del entorno
 
 ### Clonar el repositorio
 
@@ -122,7 +122,7 @@ volumes:
 
 ---
 
-## 🐳 Levantar el entorno Docker
+## Levantar el entorno Docker
 
 Desde la **raíz del proyecto** (donde se encuentra el archivo `compose.yaml`), ejecuta:
 
@@ -162,11 +162,11 @@ docker compose down
 docker compose down -v
 ```
 
-> ⚠️ **Precaución:** El flag `-v` elimina el volumen `mysql_data` y con él todos los datos de la base de datos.
+> **Precaución:** El flag `-v` elimina el volumen `mysql_data` y con él todos los datos de la base de datos.
 
 ---
 
-## 🚀 Arrancar la aplicación desde IntelliJ
+## Arrancar la aplicación desde IntelliJ
 
 ### Paso 1 — Abrir el proyecto
 
@@ -203,7 +203,7 @@ docker compose up -d
 
 **Opción B — Desde la barra de herramientas:**
 1. En la esquina superior derecha, selecciona la configuración **SmartFenixApplication**
-2. Haz clic en el botón ▶️ **Run**
+2. Haz clic en el botón**Run**
 
 **Opción C — Desde el terminal de IntelliJ:**
 ```bash
@@ -220,12 +220,12 @@ Started SmartFenixApplication in X.XXX seconds (process running for X.XXX)
 
 ---
 
-## 🌐 URLs de acceso
+## URLs de acceso
 
 | Servicio       | URL                              | Descripción                          |
 |----------------|----------------------------------|--------------------------------------|
-| 🦊 API REST    | http://localhost:8099            | Aplicación Spring Boot principal     |
-| 🗄️ phpMyAdmin  | http://localhost:8090            | Interfaz web de gestión de MySQL     |
+| API REST    | http://localhost:8099            | Aplicación Spring Boot principal     |
+| phpMyAdmin  | http://localhost:8090            | Interfaz web de gestión de MySQL     |
 
 ### Acceso a phpMyAdmin
 
@@ -237,7 +237,7 @@ Started SmartFenixApplication in X.XXX seconds (process running for X.XXX)
 
 ---
 
-## 📄 Configuración de `application.properties`
+## Configuración de `application.properties`
 
 El archivo de configuración se encuentra en:
 
@@ -281,15 +281,15 @@ debug=true
 | `spring.datasource.url`          | `...localhost:3308/...` | Conexión a MySQL en el puerto mapeado por Docker             |
 | `spring.datasource.username`     | `root`                  | Usuario de MySQL                                             |
 | `spring.datasource.password`     | `root`                  | Contraseña de MySQL                                          |
-| `spring.jpa.hibernate.ddl-auto` | `create`                | Crea las tablas al arrancar (⚠️ borra datos previos)         |
+| `spring.jpa.hibernate.ddl-auto` | `create`                | Crea las tablas al arrancar ( borra datos previos)         |
 | `spring.jpa.show-sql`            | `true`                  | Muestra las consultas SQL en consola                         |
 | `server.port`                    | `8099`                  | Puerto en el que escucha la aplicación                       |
 
-> ⚠️ **Nota:** El valor `ddl-auto=create` es útil en desarrollo pero **elimina y recrea las tablas** cada vez que la app arranca. En entornos de producción, cambia este valor a `validate` o `none`.
+> **Nota:** El valor `ddl-auto=create` es útil en desarrollo pero **elimina y recrea las tablas** cada vez que la app arranca. En entornos de producción, cambia este valor a `validate` o `none`.
 
 ---
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 ```
 SmartFenix/
@@ -344,7 +344,7 @@ SmartFenix/
 
 ---
 
-## 🔌 Endpoints de la API
+## Endpoints de la API
 
 La API base está disponible en: `http://localhost:8099`
 
@@ -390,9 +390,9 @@ La API base está disponible en: `http://localhost:8099`
 
 ---
 
-## 🧯 Solución de problemas comunes
+## Solución de problemas comunes
 
-### ❌ `Communications link failure` al arrancar
+### `Communications link failure` al arrancar
 
 **Causa:** MySQL no está corriendo o no es accesible en el puerto `3308`.
 
@@ -402,13 +402,13 @@ docker compose up -d
 docker ps  # Verificar que mysql_server está en estado "Up"
 ```
 
-### ❌ `Access denied for user 'root'@'localhost'`
+### `Access denied for user 'root'@'localhost'`
 
 **Causa:** Las credenciales no coinciden.
 
 **Solución:** Verifica que en `application.properties` las credenciales son `root` / `root`, y que el contenedor MySQL usa las mismas.
 
-### ❌ Los datos desaparecen al reiniciar la app
+### Los datos desaparecen al reiniciar la app
 
 **Causa:** `spring.jpa.hibernate.ddl-auto=create` recrea las tablas en cada arranque.
 
@@ -417,7 +417,7 @@ docker ps  # Verificar que mysql_server está en estado "Up"
 spring.jpa.hibernate.ddl-auto=update
 ```
 
-### ❌ Puerto `8099` en uso
+### Puerto `8099` en uso
 
 **Causa:** Otro proceso está usando ese puerto.
 
@@ -431,11 +431,10 @@ kill -9 <PID>
 
 ---
 
-## 👨‍💻 Autor
+##  Autor
 
 **SmartFenix API** — Proyecto de gestión empresarial con Spring Boot 3.2.5
 
 ---
 
-*Generado con ❤️ para el proyecto SmartFenix*
-# SmartFenix1
+
