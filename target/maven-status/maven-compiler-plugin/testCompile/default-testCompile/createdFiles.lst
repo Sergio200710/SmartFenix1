@@ -1,0 +1,4 @@
+com/smartfenix/controller/EmpleadoControllerIntegrationTest.class
+com/smartfenix/service/ProyectoServiceTest.class
+com/smartfenix/service/ClienteServiceTest.class
+com/smartfenix/service/EmpleadoServiceTest.class
