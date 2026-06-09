@@ -142,6 +142,91 @@ Arrancar la aplicación:
 mvn spring-boot:run
 ```
 
+### Arranque en IntelliJ IDEA
+
+Si quieres ejecutar el proyecto directamente desde IntelliJ, este es el orden recomendado:
+
+1. Abrir la carpeta del proyecto:
+
+```text
+/home/sergio/SmartFenix1
+```
+
+2. Importar el proyecto como Maven si IntelliJ lo solicita.
+
+3. Comprobar que el SDK del proyecto es `Java 21`.
+
+4. Comprobar que IntelliJ tiene habilitado Lombok:
+
+- plugin `Lombok` instalado
+- opción `Build, Execution, Deployment -> Compiler -> Annotation Processors -> Enable annotation processing` activada
+
+5. Levantar primero la base de datos:
+
+```bash
+docker compose up -d
+```
+
+6. Verificar que los servicios están arriba:
+
+```bash
+docker compose ps
+```
+
+Debe estar disponible:
+
+- MySQL en `localhost:3308`
+- phpMyAdmin en `http://localhost:8090`
+
+7. Ejecutar la configuración de IntelliJ que ya viene preparada en el proyecto:
+
+```text
+SmartFenix1 - Correcta
+```
+
+Esa configuración arranca la clase principal:
+
+```text
+com.smartfenix.SmartFenixApplication
+```
+
+8. Cuando arranque correctamente, la aplicación quedará disponible en:
+
+- `http://localhost:8099`
+- `http://localhost:8099/dashboard`
+
+#### Si prefieres crear la configuración manualmente
+
+En IntelliJ:
+
+- `Run -> Edit Configurations`
+- `+ -> Spring Boot`
+- nombre: `SmartFenix1 - Correcta`
+- main class: `com.smartfenix.SmartFenixApplication`
+- working directory: `$PROJECT_DIR$`
+- JDK: `21`
+
+#### Comprobación rápida después del arranque
+
+Comprueba estas rutas:
+
+- `http://localhost:8099/`
+- `http://localhost:8099/dashboard`
+- `http://localhost:8099/clientes`
+- `http://localhost:8099/empleados`
+- `http://localhost:8099/proyectos`
+- `http://localhost:8099/tareas`
+
+#### Si no arranca en IntelliJ
+
+Revisa estos puntos:
+
+- que Docker esté levantado
+- que MySQL esté en `3308`
+- que el SDK del proyecto sea `Java 21`
+- que Lombok y annotation processing estén activos
+- que el puerto `8099` no esté ocupado
+
 ## 6. Interfaz web
 
 La interfaz web permite usar la aplicación sin necesidad de Postman. Esto hace que el proyecto sea más cómodo de enseñar y más fácil de entender en una demostración.
