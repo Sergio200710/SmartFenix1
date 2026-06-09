@@ -1,28 +1,37 @@
 package com.smartfenix.service;
 
 import com.smartfenix.domain.Empleado;
+import com.smartfenix.repository.EmpleadoRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class EmpleadoServiceTest {
 
-    @Autowired
+    @Mock
+    private EmpleadoRepository empleadoRepository;
+
+    @InjectMocks
     private EmpleadoService empleadoService;
 
-    // CASO DE PRUEBA: Alta de empleado - comprobar que el empleado se guarda correctamente en la base de datos
     @Test
     public void testCrearEmpleado() {
         Empleado empleado = Empleado.builder()
+                .id(1L)
                 .nombre("Laura Montes")
                 .email("laura.montes@smartfenix.com")
                 .rol("Diseñadora UI/UX")
                 .build();
+
+        when(empleadoRepository.save(empleado)).thenReturn(empleado);
 
         Empleado guardado = empleadoService.save(empleado);
 
@@ -30,44 +39,31 @@ public class EmpleadoServiceTest {
         assertEquals("Laura Montes", guardado.getNombre());
         assertEquals("laura.montes@smartfenix.com", guardado.getEmail());
         assertEquals("Diseñadora UI/UX", guardado.getRol());
+        verify(empleadoRepository).save(empleado);
     }
 
-    // CASO DE PRUEBA: Búsqueda de empleado por ID - comprobar que se recupera correctamente si existe
     @Test
-    public void testBuscarEmpleado() {
-        Empleado empleado = Empleado.builder()
-                .nombre("Marcos Rivas")
-                .email("marcos.rivas@smartfenix.com")
-                .rol("DevOps Engineer")
-                .build();
-        Empleado guardado = empleadoService.save(empleado);
+    public void testListarEmpleados() {
+        List<Empleado> empleados = List.of(
+                Empleado.builder().id(1L).nombre("Marcos Rivas").email("marcos.rivas@smartfenix.com").rol("DevOps Engineer").build(),
+                Empleado.builder().id(2L).nombre("Sofia Castro").email("sofia.castro@smartfenix.com").rol("Soporte").build()
+        );
 
-        Optional<Empleado> encontrado = empleadoService.findById(guardado.getId());
+        when(empleadoRepository.findAll()).thenReturn(empleados);
 
-        assertTrue(encontrado.isPresent());
-        assertEquals("Marcos Rivas", encontrado.get().getNombre());
-        assertEquals("marcos.rivas@smartfenix.com", encontrado.get().getEmail());
+        List<Empleado> resultado = empleadoService.findAll();
+
+        assertEquals(2, resultado.size());
+        assertEquals("Marcos Rivas", resultado.get(0).getNombre());
+        verify(empleadoRepository).findAll();
     }
 
-    // CASO DE PRUEBA: Actualización de empleado - comprobar que los campos modificados se actualizan correctamente
     @Test
-    public void testActualizarEmpleado() {
-        Empleado empleado = Empleado.builder()
-                .nombre("Sofía Castro")
-                .email("sofia.castro@smartfenix.com")
-                .rol("Soporte Técnico")
-                .build();
-        Empleado guardado = empleadoService.save(empleado);
+    public void testEliminarEmpleado() {
+        Long id = 7L;
 
-        guardado.setNombre("Sofía Castro Rivas");
-        guardado.setRol("Líder de Soporte");
+        empleadoService.delete(id);
 
-        Optional<Empleado> actualizadoOpt = empleadoService.update(guardado.getId(), guardado);
-
-        assertTrue(actualizadoOpt.isPresent());
-        Empleado actualizado = actualizadoOpt.get();
-        assertEquals("Sofía Castro Rivas", actualizado.getNombre());
-        assertEquals("Líder de Soporte", actualizado.getRol());
-        assertEquals("sofia.castro@smartfenix.com", actualizado.getEmail());
+        verify(empleadoRepository).deleteById(id);
     }
 }

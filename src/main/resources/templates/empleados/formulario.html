@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de empleado | SmartFenix</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">SmartFenix</div>
+    <nav class="nav">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/clientes}">Clientes</a>
+        <a th:href="@{/empleados}">Empleados</a>
+        <a th:href="@{/proyectos}">Proyectos</a>
+        <a th:href="@{/tareas}">Tareas</a>
+    </nav>
+</header>
+
+<main class="container">
+    <section>
+        <div class="page-header">
+            <div>
+                <h1 th:text="${modoEdicion} ? 'Editar empleado' : 'Nuevo empleado'"></h1>
+                <p>Completa los datos del empleado.</p>
+            </div>
+            <a class="button secondary" th:href="@{/empleados}">Volver</a>
+        </div>
+
+        <form class="form-card"
+              th:object="${empleado}"
+              th:action="${modoEdicion} ? @{/empleados/actualizar/{id}(id=${empleado.id})} : @{/empleados/guardar}"
+              method="post">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="text" th:field="*{nombre}" placeholder="Nombre completo">
+            <p class="field-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></p>
+
+            <label for="email">Email</label>
+            <input id="email" type="email" th:field="*{email}" placeholder="correo@empresa.com">
+            <p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+
+            <label for="rol">Rol</label>
+            <input id="rol" type="text" th:field="*{rol}" placeholder="Rol o puesto">
+
+            <div class="form-actions">
+                <button class="button" type="submit" th:text="${modoEdicion} ? 'Actualizar' : 'Guardar'"></button>
+                <a class="button secondary" th:href="@{/empleados}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

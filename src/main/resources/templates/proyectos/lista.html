@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyectos | SmartFenix</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">SmartFenix</div>
+    <nav class="nav">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/clientes}">Clientes</a>
+        <a th:href="@{/empleados}">Empleados</a>
+        <a th:href="@{/proyectos}">Proyectos</a>
+        <a th:href="@{/tareas}">Tareas</a>
+    </nav>
+</header>
+
+<main class="container">
+    <section>
+        <div class="page-header">
+            <div>
+                <h1>Proyectos</h1>
+                <p>Listado y gestión de proyectos.</p>
+            </div>
+            <a class="button" th:href="@{/proyectos/nuevo}">Nuevo proyecto</a>
+        </div>
+
+        <div th:if="${mensaje}" class="alert success" th:text="${mensaje}"></div>
+        <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Cliente</th>
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="proyecto : ${proyectos}">
+                    <td th:text="${proyecto.id}"></td>
+                    <td th:text="${proyecto.nombre}"></td>
+                    <td th:text="${proyecto.cliente != null ? proyecto.cliente.nombre : 'Sin cliente'}"></td>
+                    <td th:text="${proyecto.fechaInicio}"></td>
+                    <td th:text="${proyecto.fechaFin}"></td>
+                    <td class="actions">
+                        <a class="button secondary" th:href="@{/proyectos/editar/{id}(id=${proyecto.id})}">Editar</a>
+                        <a class="button danger" th:href="@{/proyectos/eliminar/{id}(id=${proyecto.id})}"
+                           onclick="return confirm('¿Eliminar este proyecto?');">Eliminar</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(proyectos)}">
+                    <td colspan="6">No hay proyectos registrados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

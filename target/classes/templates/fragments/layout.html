@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="page(title, content)">
+    <header class="topbar">
+        <div class="brand">SmartFenix</div>
+        <nav class="nav">
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/clientes}">Clientes</a>
+            <a th:href="@{/empleados}">Empleados</a>
+            <a th:href="@{/proyectos}">Proyectos</a>
+            <a th:href="@{/tareas}">Tareas</a>
+        </nav>
+    </header>
+    <main class="container">
+        <section class="hero compact">
+            <h1 th:text="${title}"></h1>
+        </section>
+        <div th:replace="${content}"></div>
+    </main>
+</div>
+</body>
+</html>

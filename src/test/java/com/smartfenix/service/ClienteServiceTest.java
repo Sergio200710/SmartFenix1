@@ -1,73 +1,68 @@
 package com.smartfenix.service;
 
 import com.smartfenix.domain.Cliente;
+import com.smartfenix.repository.ClienteRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class ClienteServiceTest {
 
-    @Autowired
+    @Mock
+    private ClienteRepository clienteRepository;
+
+    @InjectMocks
     private ClienteService clienteService;
 
-    // CASO DE PRUEBA: Alta de cliente - comprobar que el cliente se guarda
-    // correctamente en la base de datos
     @Test
     public void testCrearCliente() {
         Cliente cliente = Cliente.builder()
+                .id(1L)
                 .nombre("Amazon")
                 .empresa("Amazon Web Services")
                 .telefono("123456789")
                 .build();
+
+        when(clienteRepository.save(cliente)).thenReturn(cliente);
 
         Cliente guardado = clienteService.save(cliente);
 
         assertNotNull(guardado.getId());
         assertEquals("Amazon", guardado.getNombre());
         assertEquals("Amazon Web Services", guardado.getEmpresa());
+        verify(clienteRepository).save(cliente);
     }
 
-    // CASO DE PRUEBA: Búsqueda de cliente por ID - comprobar que un cliente se
-    // recupera correctamente si existe
     @Test
-    public void testBuscarCliente() {
-        Cliente cliente = Cliente.builder()
-                .nombre("Sony")
-                .empresa("Sony Europe")
-                .telefono("987654321")
-                .build();
-        Cliente guardado = clienteService.save(cliente);
+    public void testListarClientes() {
+        List<Cliente> clientes = List.of(
+                Cliente.builder().id(1L).nombre("Sony").empresa("Sony Europe").telefono("987654321").build(),
+                Cliente.builder().id(2L).nombre("Google").empresa("Google LLC").telefono("111222333").build()
+        );
 
-        Optional<Cliente> encontrado = clienteService.findById(guardado.getId());
+        when(clienteRepository.findAll()).thenReturn(clientes);
 
-        assertTrue(encontrado.isPresent());
-        assertEquals("Sony", encontrado.get().getNombre());
+        List<Cliente> resultado = clienteService.findAll();
+
+        assertEquals(2, resultado.size());
+        assertEquals("Sony", resultado.get(0).getNombre());
+        verify(clienteRepository).findAll();
     }
 
-    // CASO DE PRUEBA: Actualización de cliente - comprobar que los campos
-    // modificados se actualizan correctamente
     @Test
-    public void testActualizarCliente() {
-        Cliente cliente = Cliente.builder()
-                .nombre("Google")
-                .empresa("Google España")
-                .telefono("666555444")
-                .build();
-        Cliente guardado = clienteService.save(cliente);
+    public void testEliminarCliente() {
+        Long id = 5L;
 
-        guardado.setNombre("Alphabet");
-        guardado.setEmpresa("Alphabet Inc");
+        clienteService.delete(id);
 
-        Optional<Cliente> actualizadoOpt = clienteService.update(guardado.getId(), guardado);
-
-        assertTrue(actualizadoOpt.isPresent());
-        Cliente actualizado = actualizadoOpt.get();
-        assertEquals("Alphabet", actualizado.getNombre());
-        assertEquals("Alphabet Inc", actualizado.getEmpresa());
+        verify(clienteRepository).deleteById(id);
     }
 }

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tareas | SmartFenix</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">SmartFenix</div>
+    <nav class="nav">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/clientes}">Clientes</a>
+        <a th:href="@{/empleados}">Empleados</a>
+        <a th:href="@{/proyectos}">Proyectos</a>
+        <a th:href="@{/tareas}">Tareas</a>
+    </nav>
+</header>
+
+<main class="container">
+    <section>
+        <div class="page-header">
+            <div>
+                <h1>Tareas</h1>
+                <p>Listado y gestión de tareas.</p>
+            </div>
+            <a class="button" th:href="@{/tareas/nueva}">Nueva tarea</a>
+        </div>
+
+        <div th:if="${mensaje}" class="alert success" th:text="${mensaje}"></div>
+        <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Proyecto</th>
+                    <th>Empleado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tarea : ${tareas}">
+                    <td th:text="${tarea.id}"></td>
+                    <td th:text="${tarea.descripcion}"></td>
+                    <td th:text="${tarea.estado}"></td>
+                    <td th:text="${tarea.proyecto != null ? tarea.proyecto.nombre : 'Sin proyecto'}"></td>
+                    <td th:text="${tarea.empleado != null ? tarea.empleado.nombre : 'Sin empleado'}"></td>
+                    <td class="actions">
+                        <a class="button secondary" th:href="@{/tareas/editar/{id}(id=${tarea.id})}">Editar</a>
+                        <a class="button danger" th:href="@{/tareas/eliminar/{id}(id=${tarea.id})}"
+                           onclick="return confirm('¿Eliminar esta tarea?');">Eliminar</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(tareas)}">
+                    <td colspan="6">No hay tareas registradas.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

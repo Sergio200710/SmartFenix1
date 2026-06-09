@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes | SmartFenix</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">SmartFenix</div>
+    <nav class="nav">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/clientes}">Clientes</a>
+        <a th:href="@{/empleados}">Empleados</a>
+        <a th:href="@{/proyectos}">Proyectos</a>
+        <a th:href="@{/tareas}">Tareas</a>
+    </nav>
+</header>
+
+<main class="container">
+    <section>
+        <div class="page-header">
+            <div>
+                <h1>Clientes</h1>
+                <p>Listado y gestión de clientes registrados.</p>
+            </div>
+            <a class="button" th:href="@{/clientes/nuevo}">Nuevo cliente</a>
+        </div>
+
+        <div th:if="${mensaje}" class="alert success" th:text="${mensaje}"></div>
+        <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Empresa</th>
+                    <th>Teléfono</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cliente : ${clientes}">
+                    <td th:text="${cliente.id}"></td>
+                    <td th:text="${cliente.nombre}"></td>
+                    <td th:text="${cliente.empresa}"></td>
+                    <td th:text="${cliente.telefono}"></td>
+                    <td class="actions">
+                        <a class="button secondary" th:href="@{/clientes/editar/{id}(id=${cliente.id})}">Editar</a>
+                        <a class="button danger" th:href="@{/clientes/eliminar/{id}(id=${cliente.id})}"
+                           onclick="return confirm('¿Eliminar este cliente?');">Eliminar</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(clientes)}">
+                    <td colspan="5">No hay clientes registrados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

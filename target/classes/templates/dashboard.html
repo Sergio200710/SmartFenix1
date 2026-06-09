@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFenix | Panel</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">SmartFenix</div>
+    <nav class="nav">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/clientes}">Clientes</a>
+        <a th:href="@{/empleados}">Empleados</a>
+        <a th:href="@{/proyectos}">Proyectos</a>
+        <a th:href="@{/tareas}">Tareas</a>
+    </nav>
+</header>
+
+<main class="container">
+    <section class="hero">
+        <h1>Panel de administración</h1>
+        <p>Gestiona clientes, empleados, proyectos y tareas desde una interfaz web sencilla.</p>
+    </section>
+
+    <section class="grid-cards">
+        <a class="card" th:href="@{/clientes}">
+            <h2>Clientes</h2>
+            <p>Alta, edición, consulta y borrado de clientes.</p>
+        </a>
+        <a class="card" th:href="@{/empleados}">
+            <h2>Empleados</h2>
+            <p>Gestión del personal y sus datos básicos.</p>
+        </a>
+        <a class="card" th:href="@{/proyectos}">
+            <h2>Proyectos</h2>
+            <p>Seguimiento de proyectos asociados a clientes.</p>
+        </a>
+        <a class="card" th:href="@{/tareas}">
+            <h2>Tareas</h2>
+            <p>Control de tareas, estado y asignaciones.</p>
+        </a>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empleados | SmartFenix</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">SmartFenix</div>
+    <nav class="nav">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/clientes}">Clientes</a>
+        <a th:href="@{/empleados}">Empleados</a>
+        <a th:href="@{/proyectos}">Proyectos</a>
+        <a th:href="@{/tareas}">Tareas</a>
+    </nav>
+</header>
+
+<main class="container">
+    <section>
+        <div class="page-header">
+            <div>
+                <h1>Empleados</h1>
+                <p>Listado y gestión de empleados.</p>
+            </div>
+            <a class="button" th:href="@{/empleados/nuevo}">Nuevo empleado</a>
+        </div>
+
+        <div th:if="${mensaje}" class="alert success" th:text="${mensaje}"></div>
+        <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="empleado : ${empleados}">
+                    <td th:text="${empleado.id}"></td>
+                    <td th:text="${empleado.nombre}"></td>
+                    <td th:text="${empleado.email}"></td>
+                    <td th:text="${empleado.rol}"></td>
+                    <td class="actions">
+                        <a class="button secondary" th:href="@{/empleados/editar/{id}(id=${empleado.id})}">Editar</a>
+                        <a class="button danger" th:href="@{/empleados/eliminar/{id}(id=${empleado.id})}"
+                           onclick="return confirm('¿Eliminar este empleado?');">Eliminar</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(empleados)}">
+                    <td colspan="5">No hay empleados registrados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

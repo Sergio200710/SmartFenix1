@@ -237,6 +237,94 @@ Started SmartFenixApplication in X.XXX seconds (process running for X.XXX)
 
 ---
 
+## Verificación y pruebas
+
+| Caso | Qué se prueba | Datos de entrada | Resultado esperado |
+|------|---------------|------------------|--------------------|
+| Caso 1: Alta de cliente | Crear un cliente desde la aplicación | Nombre, empresa y teléfono del cliente | El cliente se guarda correctamente y aparece en el listado |
+| Caso 2: Consulta de clientes | Consultar los clientes almacenados | Petición `GET /api/clientes` o acceso al listado | Se muestra la lista de clientes registrados |
+| Caso 3: Modificación de proyecto | Editar los datos de un proyecto existente | Nuevo nombre y fechas del proyecto | El proyecto queda actualizado correctamente |
+| Caso 4: Eliminación de empleado | Eliminar un registro existente | ID de un empleado existente | El registro se elimina y deja de estar disponible |
+| Caso 5: Consulta de registro inexistente | Consultar un ID que no existe | Petición `GET /api/empleados/9999` | La aplicación responde de forma controlada con `404 Not Found` |
+
+## Pruebas unitarias implementadas
+
+Se han creado pruebas unitarias sobre servicios usando **JUnit 5** y **Mockito**, sin levantar toda la aplicación y sin usar base de datos real.
+
+- `ClienteServiceTest`: crear cliente, listar clientes y eliminar cliente.
+- `EmpleadoServiceTest`: crear empleado, listar empleados y eliminar empleado.
+- `ProyectoServiceTest`: crear proyecto, listar proyectos y modificar proyecto.
+
+Estas pruebas usan `@ExtendWith(MockitoExtension.class)`, `@Mock` para los repositorios y `@InjectMocks` para los servicios.
+
+## Prueba de integración implementada
+
+Se ha implementado una prueba de integración en `EmpleadoControllerIntegrationTest` con:
+
+- `@SpringBootTest`
+- `@AutoConfigureMockMvc`
+- `@ActiveProfiles("test")`
+- `MockMvc`
+- base de datos **H2 en memoria**
+
+En esta prueba se comprueban endpoints REST reales de empleados, incluyendo:
+
+- `GET /api/empleados`
+- `POST /api/empleados`
+- `GET /api/empleados/9999`
+
+## Cómo ejecutar las pruebas
+
+Desde la raíz del proyecto ejecuta:
+
+```bash
+mvn test
+```
+
+Resumen de ejecución:
+
+- Las pruebas unitarias no usan base de datos real.
+- Las pruebas unitarias usan Mockito.
+- La prueba de integración usa H2 en memoria con el perfil `test`.
+- No hace falta levantar Docker ni MySQL/MariaDB para ejecutar los tests.
+
+## Depuración
+
+Para la demo se puede colocar un breakpoint en el método `ProyectoService.update(...)` o en otro método real de servicio como `ClienteService.save(...)`.
+
+1. Ejecutar la aplicación o un test en modo **Debug** desde IntelliJ IDEA o Eclipse.
+2. Crear o editar un cliente/proyecto desde la aplicación o desde una prueba.
+3. Comprobar que el programa se detiene en el breakpoint.
+4. Inspeccionar variables como `id`, `cliente`, `proyecto`, `nombre`, `email` o `estado`.
+5. Avanzar con **Step Over** para ver cómo se ejecuta la lógica.
+6. Continuar la ejecución y comprobar que el dato se guarda o actualiza correctamente.
+
+## Resultados obtenidos
+
+Con esta adaptación, el proyecto queda preparado para la actividad de verificación y pruebas con:
+
+- pruebas unitarias de servicios desacopladas de la base de datos real
+- una prueba de integración de varias capas con Spring Boot, MockMvc y H2
+- casos de prueba documentados en este `README.md`
+- guía básica de depuración para la demostración en vídeo
+
+---
+
+## Interfaz web
+
+La aplicación incluye una interfaz web con Thymeleaf para gestionar desde el navegador las entidades principales del sistema.
+
+- URL principal: `http://localhost:8099`
+- Rutas disponibles:
+  - `/clientes`
+  - `/empleados`
+  - `/proyectos`
+  - `/tareas`
+
+Desde esta interfaz se pueden crear, consultar, modificar y eliminar registros de clientes, empleados, proyectos y tareas, además de navegar desde un panel principal.
+
+---
+
 ## Configuración de `application.properties`
 
 El archivo de configuración se encuentra en:
@@ -436,5 +524,3 @@ kill -9 <PID>
 **SmartFenix API** — Proyecto de gestión empresarial con Spring Boot 3.2.5
 
 ---
-
-

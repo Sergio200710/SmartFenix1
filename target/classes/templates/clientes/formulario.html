@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de cliente | SmartFenix</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">SmartFenix</div>
+    <nav class="nav">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/clientes}">Clientes</a>
+        <a th:href="@{/empleados}">Empleados</a>
+        <a th:href="@{/proyectos}">Proyectos</a>
+        <a th:href="@{/tareas}">Tareas</a>
+    </nav>
+</header>
+
+<main class="container">
+    <section>
+        <div class="page-header">
+            <div>
+                <h1 th:text="${modoEdicion} ? 'Editar cliente' : 'Nuevo cliente'"></h1>
+                <p>Completa los datos del cliente.</p>
+            </div>
+            <a class="button secondary" th:href="@{/clientes}">Volver</a>
+        </div>
+
+        <form class="form-card"
+              th:object="${cliente}"
+              th:action="${modoEdicion} ? @{/clientes/actualizar/{id}(id=${cliente.id})} : @{/clientes/guardar}"
+              method="post">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="text" th:field="*{nombre}" placeholder="Nombre del cliente">
+            <p class="field-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></p>
+
+            <label for="empresa">Empresa</label>
+            <input id="empresa" type="text" th:field="*{empresa}" placeholder="Empresa">
+
+            <label for="telefono">Teléfono</label>
+            <input id="telefono" type="text" th:field="*{telefono}" placeholder="Teléfono">
+
+            <div class="form-actions">
+                <button class="button" type="submit" th:text="${modoEdicion} ? 'Actualizar' : 'Guardar'"></button>
+                <a class="button secondary" th:href="@{/clientes}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

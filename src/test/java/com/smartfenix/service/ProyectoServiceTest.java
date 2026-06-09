@@ -1,98 +1,87 @@
 package com.smartfenix.service;
 
-import com.smartfenix.domain.Cliente;
 import com.smartfenix.domain.Proyecto;
+import com.smartfenix.repository.ProyectoRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class ProyectoServiceTest {
 
-    @Autowired
+    @Mock
+    private ProyectoRepository proyectoRepository;
+
+    @InjectMocks
     private ProyectoService proyectoService;
 
-    @Autowired
-    private ClienteService clienteService;
-
-    // CASO DE PRUEBA: Alta de proyecto - comprobar que el proyecto se asocia a un cliente y se guarda correctamente
     @Test
     public void testCrearProyecto() {
-        Cliente cliente = Cliente.builder()
-                .nombre("Amazon")
-                .empresa("Amazon Web Services")
-                .telefono("123456789")
-                .build();
-        Cliente clienteGuardado = clienteService.save(cliente);
-
         Proyecto proyecto = Proyecto.builder()
+                .id(1L)
                 .nombre("Proyecto Migración AWS")
                 .fechaInicio(LocalDate.now())
                 .fechaFin(LocalDate.now().plusDays(45))
-                .cliente(clienteGuardado)
                 .build();
+
+        when(proyectoRepository.save(proyecto)).thenReturn(proyecto);
+
         Proyecto guardado = proyectoService.save(proyecto);
 
         assertNotNull(guardado.getId());
         assertEquals("Proyecto Migración AWS", guardado.getNombre());
-        assertEquals(clienteGuardado.getId(), guardado.getCliente().getId());
+        verify(proyectoRepository).save(proyecto);
     }
 
-    // CASO DE PRUEBA: Búsqueda de proyecto por ID - comprobar que un proyecto y su cliente asociado se recuperan correctamente
     @Test
-    public void testBuscarProyecto() {
-        Cliente cliente = Cliente.builder()
-                .nombre("Sony")
-                .empresa("Sony Europe")
-                .telefono("987654321")
-                .build();
-        Cliente clienteGuardado = clienteService.save(cliente);
+    public void testListarProyectos() {
+        List<Proyecto> proyectos = List.of(
+                Proyecto.builder().id(1L).nombre("Proyecto Playstation").fechaInicio(LocalDate.now()).fechaFin(LocalDate.now().plusDays(60)).build(),
+                Proyecto.builder().id(2L).nombre("Proyecto ERP").fechaInicio(LocalDate.now()).fechaFin(LocalDate.now().plusDays(30)).build()
+        );
 
-        Proyecto proyecto = Proyecto.builder()
-                .nombre("Proyecto Playstation")
-                .fechaInicio(LocalDate.now())
-                .fechaFin(LocalDate.now().plusDays(60))
-                .cliente(clienteGuardado)
-                .build();
-        Proyecto guardado = proyectoService.save(proyecto);
+        when(proyectoRepository.findAll()).thenReturn(proyectos);
 
-        Optional<Proyecto> encontrado = proyectoService.findById(guardado.getId());
+        List<Proyecto> resultado = proyectoService.findAll();
 
-        assertTrue(encontrado.isPresent());
-        assertEquals("Proyecto Playstation", encontrado.get().getNombre());
-        assertNotNull(encontrado.get().getCliente());
+        assertEquals(2, resultado.size());
+        assertEquals("Proyecto Playstation", resultado.get(0).getNombre());
+        verify(proyectoRepository).findAll();
     }
 
-    // CASO DE PRUEBA: Actualización de proyecto - comprobar que los campos modificados se actualizan correctamente
     @Test
     public void testActualizarProyecto() {
-        Cliente cliente = Cliente.builder()
-                .nombre("Google")
-                .empresa("Google LLC")
-                .telefono("111222333")
-                .build();
-        Cliente clienteGuardado = clienteService.save(cliente);
-
-        Proyecto proyecto = Proyecto.builder()
+        Proyecto proyectoExistente = Proyecto.builder()
+                .id(1L)
                 .nombre("Proyecto Inicial")
                 .fechaInicio(LocalDate.now())
                 .fechaFin(LocalDate.now().plusDays(30))
-                .cliente(clienteGuardado)
                 .build();
-        Proyecto proyectoGuardado = proyectoService.save(proyecto);
+        Proyecto datosActualizados = Proyecto.builder()
+                .nombre("Proyecto Actualizado")
+                .fechaInicio(proyectoExistente.getFechaInicio())
+                .fechaFin(proyectoExistente.getFechaFin().plusDays(15))
+                .build();
 
-        proyectoGuardado.setNombre("Proyecto Actualizado");
+        when(proyectoRepository.findById(1L)).thenReturn(Optional.of(proyectoExistente));
+        when(proyectoRepository.save(any(Proyecto.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<Proyecto> proyectoActualizadoOpt = proyectoService.update(proyectoGuardado.getId(), proyectoGuardado);
+        Optional<Proyecto> proyectoActualizadoOpt = proyectoService.update(1L, datosActualizados);
 
         assertTrue(proyectoActualizadoOpt.isPresent());
         Proyecto proyectoActualizado = proyectoActualizadoOpt.get();
         assertEquals("Proyecto Actualizado", proyectoActualizado.getNombre());
-        assertEquals(clienteGuardado.getId(), proyectoActualizado.getCliente().getId());
+        assertEquals(datosActualizados.getFechaFin(), proyectoActualizado.getFechaFin());
+        verify(proyectoRepository).findById(1L);
+        verify(proyectoRepository).save(proyectoExistente);
     }
 }
