@@ -1,526 +1,435 @@
-# SmartFenix API
+# SmartFenix
 
-> API REST construida con **Spring Boot 3.2.5** para la gestión integral de proyectos, tareas, empleados y clientes.
+SmartFenix es una aplicación Spring Boot para gestionar clientes, empleados, proyectos y tareas. El proyecto combina una interfaz web con Thymeleaf y una API REST bajo `/api`, siguiendo una arquitectura por capas `Controller -> Service -> Repository -> Domain`.
 
----
+## 1. Descripción del proyecto
 
-## Índice
+SmartFenix sirve para organizar información básica de una empresa de forma centralizada. El objetivo del proyecto es evitar llevar clientes, empleados, proyectos y tareas de forma desordenada, repartida en papeles o en hojas sueltas, y ofrecer una aplicación sencilla desde la que se puedan consultar y modificar esos datos.
 
-1. [Descripción del proyecto](#-descripción-del-proyecto)
-2. [Tecnologías utilizadas](#-tecnologías-utilizadas)
-3. [Requisitos previos](#-requisitos-previos)
-4. [Configuración del entorno](#-configuración-del-entorno)
-5. [Levantar el entorno Docker](#-levantar-el-entorno-docker)
-6. [Arrancar la aplicación desde IntelliJ](#-arrancar-la-aplicación-desde-intellij)
-7. [URLs de acceso](#-urls-de-acceso)
-8. [Configuración de application.properties](#-configuración-de-applicationproperties)
-9. [Estructura del proyecto](#-estructura-del-proyecto)
-10. [Endpoints de la API](#-endpoints-de-la-api)
+El sistema gestiona principalmente estos datos:
 
----
+- clientes o empresas que solicitan trabajos
+- empleados internos y su rol
+- proyectos asociados a un cliente
+- tareas concretas asignadas a un proyecto y a un empleado
 
-## Descripción del proyecto
+Se ha usado **Spring Boot 3.2.5** porque permite crear una aplicación web completa de forma rápida, con menos configuración manual y con una estructura clara para separar cada capa del proyecto.
 
-**SmartFenix** es una API REST desarrollada con Spring Boot que permite gestionar de forma centralizada:
+Desde la aplicación, el usuario puede:
 
--**Clientes** — Registro y gestión de clientes de la empresa
--**Empleados** — Control del personal y sus asignaciones
--**Proyectos** — Seguimiento del ciclo de vida de los proyectos
--**Tareas** — Gestión de tareas asociadas a proyectos y empleados
+- crear registros nuevos
+- consultar información ya guardada
+- modificar datos existentes
+- eliminar registros cuando sea necesario
 
-La aplicación utiliza **MySQL** como base de datos relacional, orquestada mediante **Docker Compose**, y expone una API REST con arquitectura en capas (Controller → Service → Repository → Domain).
+La diferencia entre la **interfaz web** y la **API REST** es la siguiente:
 
----
+- la interfaz web está pensada para usar la aplicación desde el navegador de forma visual
+- la API REST está pensada para trabajar con peticiones HTTP, por ejemplo desde Postman o desde pruebas automáticas
 
-## Tecnologías utilizadas
+## 2. Tecnologías utilizadas
 
-| Tecnología               | Versión     | Uso                              |
-|--------------------------|-------------|----------------------------------|
-| Java                     | 21          | Lenguaje de programación         |
-| Spring Boot              | 3.2.5       | Framework principal              |
-| Spring Data JPA          | —           | Acceso a datos / ORM             |
-| Spring Validation        | —           | Validación de entidades          |
-| Hibernate                | —           | Dialecto MySQL                   |
-| MySQL                    | 8.0         | Base de datos relacional         |
-| Lombok                   | 1.18.32     | Reducción de boilerplate         |
-| Docker / Docker Compose  | —           | Contenedores (MySQL + phpMyAdmin)|
-| Maven                    | —           | Gestión de dependencias y build  |
+Cada tecnología del proyecto tiene una función concreta dentro de la aplicación:
 
----
+| Tecnología | Versión | Explicación |
+| --- | --- | --- |
+| Java | 21 | Lenguaje principal con el que está desarrollado todo el proyecto |
+| Spring Boot | 3.2.5 | Permite crear la aplicación de forma rápida y organizada |
+| Maven | - | Gestiona dependencias, compila el proyecto y ejecuta pruebas |
+| Spring Data JPA | - | Facilita la conexión con la base de datos mediante repositorios |
+| Spring Validation | - | Ayuda a validar datos de entrada en formularios y peticiones |
+| Lombok | 1.18.32 | Reduce código repetitivo como getters, setters o builders |
+| MySQL | 8.0 | Base de datos real usada por la aplicación en ejecución normal |
+| Docker Compose | - | Levanta MySQL y phpMyAdmin con una sola configuración |
+| phpMyAdmin | - | Permite visualizar y revisar la base de datos desde el navegador |
+| Thymeleaf | - | Se usa para construir la interfaz web |
+| JUnit 5 | - | Framework principal para escribir pruebas automatizadas |
+| Mockito | - | Simula repositorios en pruebas unitarias para no usar base real |
+| MockMvc | - | Simula peticiones HTTP en la prueba de integración |
+| H2 | - | Base de datos en memoria usada en integración para no depender de MySQL |
 
-## Requisitos previos
+## 3. Arquitectura del sistema
 
-Antes de arrancar el proyecto, asegúrate de tener instalado lo siguiente:
+SmartFenix sigue una arquitectura por capas. Esta organización hace que el proyecto sea más fácil de entender, más sencillo de mantener y más cómodo de probar.
 
-### 1. Docker Desktop / Docker Engine
-- Descarga: [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
-- Verifica la instalación:
-  ```bash
-  docker --version
-  docker compose version
-  ```
+### Domain
 
-### 2. Java Development Kit (JDK) 21
-- Descarga: [https://adoptium.net/es/temurin/releases/](https://adoptium.net/es/temurin/releases/)
-- Verifica la instalación:
-  ```bash
-  java -version
-  ```
-  Salida esperada: `openjdk version "21.x.x"`
+La capa **Domain** contiene las entidades JPA del sistema. Estas clases representan la información principal del proyecto y están relacionadas con las tablas de la base de datos.
 
-### 3. IntelliJ IDEA
-- Descarga: [https://www.jetbrains.com/idea/download/](https://www.jetbrains.com/idea/download/)
-- Se recomienda la versión **Community** o **Ultimate**
-- Plugin recomendado: **Lombok** (normalmente ya viene preinstalado)
+### Repository
 
----
+La capa **Repository** contiene interfaces que extienden `JpaRepository`. Gracias a eso, el proyecto puede guardar, buscar, listar y eliminar registros sin tener que escribir manualmente muchas consultas básicas.
 
-## Configuración del entorno
+### Service
 
-### Clonar el repositorio
+La capa **Service** contiene la lógica de negocio. Sirve para que el controlador no acceda directamente al repositorio y para concentrar en un mismo lugar operaciones como guardar, actualizar o validar comportamiento de las entidades.
 
-```bash
-git clone <url-del-repositorio>
-cd SmartFenix
-```
+### Controller
 
-### Verificar el archivo `compose.yaml`
+La capa **Controller** recibe peticiones HTTP. En el proyecto hay dos usos principales:
 
-El archivo `compose.yaml` en la raíz del proyecto define los servicios Docker necesarios:
+- controladores REST, que devuelven respuestas JSON
+- controladores web, que devuelven vistas Thymeleaf
 
-```yaml
-version: '3.8'
-services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql_server
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: smartfenix_db
-    ports:
-      - "3308:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
+### Flujo general
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: phpmyadmin
-    restart: always
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "8090:80"
-    depends_on:
-      - mysql
+El flujo habitual del proyecto puede explicarse así:
 
-volumes:
-  mysql_data:
-```
+`Usuario / Postman -> Controller -> Service -> Repository -> Base de datos`
 
----
+En las pruebas unitarias este flujo se corta antes de llegar a la base de datos real, porque el `Repository` se simula con Mockito.
 
-## Levantar el entorno Docker
+## 4. Entidades principales
 
-Desde la **raíz del proyecto** (donde se encuentra el archivo `compose.yaml`), ejecuta:
+Las entidades principales del sistema son estas:
+
+| Entidad | Campos principales | Función |
+| --- | --- | --- |
+| Cliente | nombre, empresa, telefono | Representa una empresa o persona que solicita trabajos |
+| Empleado | nombre, email, rol | Representa trabajadores internos de SmartFenix |
+| Proyecto | nombre, fechaInicio, fechaFin, cliente | Representa proyectos o trabajos asociados a un cliente |
+| Tarea | descripcion, estado, proyecto, empleado | Representa tareas concretas asignadas dentro de un proyecto |
+
+### Explicación breve de cada entidad
+
+- **Cliente:** guarda la información básica de una empresa o persona con la que se trabaja.
+- **Empleado:** permite registrar trabajadores internos y el rol que desempeñan.
+- **Proyecto:** relaciona un trabajo concreto con un cliente y con unas fechas.
+- **Tarea:** divide el trabajo en acciones más pequeñas asociadas a un proyecto y a un empleado responsable.
+
+## 5. Configuración y ejecución
+
+Para trabajar con el proyecto hace falta tener configurado el entorno correcto.
+
+- **Java 21** debe estar disponible para compilar y ejecutar la aplicación.
+- **Maven** permite lanzar comandos como `mvn test` y `mvn spring-boot:run`.
+- **Docker Compose** levanta los servicios necesarios para la aplicación real.
+- **MySQL real** se usa para ejecutar la aplicación en condiciones normales.
+- **H2** solo se usa en la prueba de integración.
+- **phpMyAdmin** sirve para visualizar la base de datos sin necesidad de usar comandos SQL manuales.
+
+Configuración oficial:
+
+- MySQL: `localhost:3308`
+- phpMyAdmin: `http://localhost:8090`
+- usuario MySQL: `root`
+- contraseña MySQL: `root`
+- aplicación: `http://localhost:8099`
+
+### Comandos principales
+
+Levantar Docker:
 
 ```bash
 docker compose up -d
 ```
 
-Este comando:
-1. Descarga las imágenes de **MySQL 8.0** y **phpMyAdmin** si no las tienes en local
-2. Crea y arranca los contenedores en segundo plano (`-d` = detached)
-3. Crea automáticamente la base de datos `smartfenix_db`
-4. Expone MySQL en el puerto `3308` y phpMyAdmin en el puerto `8090`
-
-### Verificar que los contenedores están corriendo
+Ver el estado de los contenedores:
 
 ```bash
-docker ps
+docker compose ps
 ```
 
-Deberías ver algo similar a:
-
-```
-CONTAINER ID   IMAGE                          PORTS                    NAMES
-xxxxxxxxxxxx   mysql:8.0                      0.0.0.0:3308->3306/tcp   mysql_server
-xxxxxxxxxxxx   phpmyadmin/phpmyadmin:latest   0.0.0.0:8090->80/tcp     phpmyadmin
-```
-
-### Parar los contenedores
-
-```bash
-docker compose down
-```
-
-### Parar los contenedores y eliminar los datos
-
-```bash
-docker compose down -v
-```
-
-> **Precaución:** El flag `-v` elimina el volumen `mysql_data` y con él todos los datos de la base de datos.
-
----
-
-## Arrancar la aplicación desde IntelliJ
-
-### Paso 1 — Abrir el proyecto
-
-1. Abre **IntelliJ IDEA**
-2. Selecciona **File → Open...**
-3. Navega hasta la carpeta `SmartFenix` y haz clic en **OK / Abrir**
-4. Espera a que Maven descargue todas las dependencias (la barra de progreso aparece en la parte inferior)
-
-### Paso 2 — Verificar la configuración de JDK
-
-1. Ve a **File → Project Structure → Project**
-2. Asegúrate de que el **SDK** está configurado en **Java 21**
-3. Si no aparece, haz clic en el desplegable y selecciona **Add SDK → JDK** apuntando a tu instalación
-
-### Paso 3 — Habilitar el procesador de anotaciones (Lombok)
-
-1. Ve a **File → Settings → Build, Execution, Deployment → Compiler → Annotation Processors**
-2. Marca la casilla **Enable annotation processing**
-3. Haz clic en **Apply → OK**
-
-### Paso 4 — Asegúrate de que Docker está corriendo
-
-Antes de arrancar la aplicación, los contenedores de Docker **deben estar activos**. Si no los has levantado aún:
-
-```bash
-docker compose up -d
-```
-
-### Paso 5 — Ejecutar la aplicación
-
-**Opción A — Desde el panel de archivos:**
-1. Navega en el árbol de proyecto hasta `src/main/java/com/smartfenix/SmartFenixApplication.java`
-2. Haz clic derecho sobre el archivo → **Run 'SmartFenixApplication'**
-
-**Opción B — Desde la barra de herramientas:**
-1. En la esquina superior derecha, selecciona la configuración **SmartFenixApplication**
-2. Haz clic en el botón**Run**
-
-**Opción C — Desde el terminal de IntelliJ:**
-```bash
-./mvnw spring-boot:run
-```
-
-### Paso 6 — Verificar el arranque
-
-La aplicación estará lista cuando veas en la consola:
-
-```
-Started SmartFenixApplication in X.XXX seconds (process running for X.XXX)
-```
-
----
-
-## URLs de acceso
-
-| Servicio       | URL                              | Descripción                          |
-|----------------|----------------------------------|--------------------------------------|
-| API REST    | http://localhost:8099            | Aplicación Spring Boot principal     |
-| phpMyAdmin  | http://localhost:8090            | Interfaz web de gestión de MySQL     |
-
-### Acceso a phpMyAdmin
-
-1. Abre el navegador y ve a: **http://localhost:8090**
-2. Introduce las credenciales:
-   - **Usuario:** `root`
-   - **Contraseña:** `root`
-3. Una vez dentro, verás la base de datos **`smartfenix_db`** en el panel lateral izquierdo
-
----
-
-## Verificación y pruebas
-
-| Caso | Qué se prueba | Datos de entrada | Resultado esperado |
-|------|---------------|------------------|--------------------|
-| Caso 1: Alta de cliente | Crear un cliente desde la aplicación | Nombre, empresa y teléfono del cliente | El cliente se guarda correctamente y aparece en el listado |
-| Caso 2: Consulta de clientes | Consultar los clientes almacenados | Petición `GET /api/clientes` o acceso al listado | Se muestra la lista de clientes registrados |
-| Caso 3: Modificación de proyecto | Editar los datos de un proyecto existente | Nuevo nombre y fechas del proyecto | El proyecto queda actualizado correctamente |
-| Caso 4: Eliminación de empleado | Eliminar un registro existente | ID de un empleado existente | El registro se elimina y deja de estar disponible |
-| Caso 5: Consulta de registro inexistente | Consultar un ID que no existe | Petición `GET /api/empleados/9999` | La aplicación responde de forma controlada con `404 Not Found` |
-
-## Pruebas unitarias implementadas
-
-Se han creado pruebas unitarias sobre servicios usando **JUnit 5** y **Mockito**, sin levantar toda la aplicación y sin usar base de datos real.
-
-- `ClienteServiceTest`: crear cliente, listar clientes y eliminar cliente.
-- `EmpleadoServiceTest`: crear empleado, listar empleados y eliminar empleado.
-- `ProyectoServiceTest`: crear proyecto, listar proyectos y modificar proyecto.
-
-Estas pruebas usan `@ExtendWith(MockitoExtension.class)`, `@Mock` para los repositorios y `@InjectMocks` para los servicios.
-
-## Prueba de integración implementada
-
-Se ha implementado una prueba de integración en `EmpleadoControllerIntegrationTest` con:
-
-- `@SpringBootTest`
-- `@AutoConfigureMockMvc`
-- `@ActiveProfiles("test")`
-- `MockMvc`
-- base de datos **H2 en memoria**
-
-En esta prueba se comprueban endpoints REST reales de empleados, incluyendo:
-
-- `GET /api/empleados`
-- `POST /api/empleados`
-- `GET /api/empleados/9999`
-
-## Cómo ejecutar las pruebas
-
-Desde la raíz del proyecto ejecuta:
+Ejecutar todas las pruebas:
 
 ```bash
 mvn test
 ```
 
-Resumen de ejecución:
+Arrancar la aplicación:
 
-- Las pruebas unitarias no usan base de datos real.
-- Las pruebas unitarias usan Mockito.
-- La prueba de integración usa H2 en memoria con el perfil `test`.
-- No hace falta levantar Docker ni MySQL/MariaDB para ejecutar los tests.
-
-## Depuración
-
-Para la demo se puede colocar un breakpoint en el método `ProyectoService.update(...)` o en otro método real de servicio como `ClienteService.save(...)`.
-
-1. Ejecutar la aplicación o un test en modo **Debug** desde IntelliJ IDEA o Eclipse.
-2. Crear o editar un cliente/proyecto desde la aplicación o desde una prueba.
-3. Comprobar que el programa se detiene en el breakpoint.
-4. Inspeccionar variables como `id`, `cliente`, `proyecto`, `nombre`, `email` o `estado`.
-5. Avanzar con **Step Over** para ver cómo se ejecuta la lógica.
-6. Continuar la ejecución y comprobar que el dato se guarda o actualiza correctamente.
-
-## Resultados obtenidos
-
-Con esta adaptación, el proyecto queda preparado para la actividad de verificación y pruebas con:
-
-- pruebas unitarias de servicios desacopladas de la base de datos real
-- una prueba de integración de varias capas con Spring Boot, MockMvc y H2
-- casos de prueba documentados en este `README.md`
-- guía básica de depuración para la demostración en vídeo
-
----
-
-## Interfaz web
-
-La aplicación incluye una interfaz web con Thymeleaf para gestionar desde el navegador las entidades principales del sistema.
-
-- URL principal: `http://localhost:8099`
-- Rutas disponibles:
-  - `/clientes`
-  - `/empleados`
-  - `/proyectos`
-  - `/tareas`
-
-Desde esta interfaz se pueden crear, consultar, modificar y eliminar registros de clientes, empleados, proyectos y tareas, además de navegar desde un panel principal.
-
----
-
-## Configuración de `application.properties`
-
-El archivo de configuración se encuentra en:
-
-```
-src/main/resources/application.properties
-```
-
-Contenido actual:
-
-```properties
-# =============================================
-# DATASOURCE — Conexión con MySQL (Docker)
-# =============================================
-spring.datasource.url=jdbc:mysql://localhost:3308/smartfenix_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-spring.datasource.username=root
-spring.datasource.password=root
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-
-# =============================================
-# JPA / HIBERNATE
-# =============================================
-spring.jpa.hibernate.ddl-auto=create
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
-
-# =============================================
-# SERVIDOR
-# =============================================
-server.port=8099
-
-# =============================================
-# DEBUG
-# =============================================
-debug=true
-```
-
-### Descripción de los parámetros clave
-
-| Parámetro                        | Valor                   | Descripción                                                  |
-|----------------------------------|-------------------------|--------------------------------------------------------------|
-| `spring.datasource.url`          | `...localhost:3308/...` | Conexión a MySQL en el puerto mapeado por Docker             |
-| `spring.datasource.username`     | `root`                  | Usuario de MySQL                                             |
-| `spring.datasource.password`     | `root`                  | Contraseña de MySQL                                          |
-| `spring.jpa.hibernate.ddl-auto` | `create`                | Crea las tablas al arrancar ( borra datos previos)         |
-| `spring.jpa.show-sql`            | `true`                  | Muestra las consultas SQL en consola                         |
-| `server.port`                    | `8099`                  | Puerto en el que escucha la aplicación                       |
-
-> **Nota:** El valor `ddl-auto=create` es útil en desarrollo pero **elimina y recrea las tablas** cada vez que la app arranca. En entornos de producción, cambia este valor a `validate` o `none`.
-
----
-
-## Estructura del proyecto
-
-```
-SmartFenix/
-├── compose.yaml                          # Orquestación Docker (MySQL + phpMyAdmin)
-├── pom.xml                               # Dependencias y configuración Maven
-├── README.md                             # Este archivo
-│
-└── src/
-    └── main/
-        ├── java/
-        │   └── com/
-        │       └── smartfenix/
-        │           ├── SmartFenixApplication.java        # Clase principal (punto de entrada)
-        │           ├── DataLoader.java                   # Carga inicial de datos de prueba
-        │           │
-        │           ├── controller/                       # Capa de exposición REST
-        │           │   ├── ClienteController.java
-        │           │   ├── EmpleadoController.java
-        │           │   ├── ProyectoController.java
-        │           │   └── TareaController.java
-        │           │
-        │           ├── domain/                           # Entidades JPA (modelo de datos)
-        │           │   ├── Cliente.java
-        │           │   ├── Empleado.java
-        │           │   ├── Proyecto.java
-        │           │   └── Tarea.java
-        │           │
-        │           ├── repository/                       # Capa de acceso a datos (Spring Data JPA)
-        │           │   ├── ClienteRepository.java
-        │           │   ├── EmpleadoRepository.java
-        │           │   ├── ProyectoRepository.java
-        │           │   └── TareaRepository.java
-        │           │
-        │           └── service/                          # Capa de lógica de negocio
-        │               ├── ClienteService.java
-        │               ├── EmpleadoService.java
-        │               ├── ProyectoService.java
-        │               └── TareaService.java
-        │
-        └── resources/
-            └── application.properties                    # Configuración de la aplicación
-```
-
-### Descripción de las capas
-
-| Capa           | Paquete        | Responsabilidad                                              |
-|----------------|----------------|--------------------------------------------------------------|
-| **Controller** | `controller/`  | Recibe peticiones HTTP y devuelve respuestas JSON            |
-| **Service**    | `service/`     | Contiene la lógica de negocio y orquesta operaciones         |
-| **Repository** | `repository/`  | Acceso a la base de datos mediante Spring Data JPA           |
-| **Domain**     | `domain/`      | Definición de las entidades mapeadas a tablas MySQL          |
-
----
-
-## Endpoints de la API
-
-La API base está disponible en: `http://localhost:8099`
-
-### Clientes — `/api/clientes`
-
-| Método | Endpoint              | Descripción                    |
-|--------|-----------------------|--------------------------------|
-| GET    | `/api/clientes`       | Listar todos los clientes      |
-| GET    | `/api/clientes/{id}`  | Obtener un cliente por ID      |
-| POST   | `/api/clientes`       | Crear un nuevo cliente         |
-| PUT    | `/api/clientes/{id}`  | Actualizar un cliente          |
-| DELETE | `/api/clientes/{id}`  | Eliminar un cliente            |
-
-### Empleados — `/api/empleados`
-
-| Método | Endpoint               | Descripción                    |
-|--------|------------------------|--------------------------------|
-| GET    | `/api/empleados`       | Listar todos los empleados     |
-| GET    | `/api/empleados/{id}`  | Obtener un empleado por ID     |
-| POST   | `/api/empleados`       | Crear un nuevo empleado        |
-| PUT    | `/api/empleados/{id}`  | Actualizar un empleado         |
-| DELETE | `/api/empleados/{id}`  | Eliminar un empleado           |
-
-### Proyectos — `/api/proyectos`
-
-| Método | Endpoint               | Descripción                    |
-|--------|------------------------|--------------------------------|
-| GET    | `/api/proyectos`       | Listar todos los proyectos     |
-| GET    | `/api/proyectos/{id}`  | Obtener un proyecto por ID     |
-| POST   | `/api/proyectos`       | Crear un nuevo proyecto        |
-| PUT    | `/api/proyectos/{id}`  | Actualizar un proyecto         |
-| DELETE | `/api/proyectos/{id}`  | Eliminar un proyecto           |
-
-### Tareas — `/api/tareas`
-
-| Método | Endpoint           | Descripción                    |
-|--------|--------------------|--------------------------------|
-| GET    | `/api/tareas`      | Listar todas las tareas        |
-| GET    | `/api/tareas/{id}` | Obtener una tarea por ID       |
-| POST   | `/api/tareas`      | Crear una nueva tarea          |
-| PUT    | `/api/tareas/{id}` | Actualizar una tarea           |
-| DELETE | `/api/tareas/{id}` | Eliminar una tarea             |
-
----
-
-## Solución de problemas comunes
-
-### `Communications link failure` al arrancar
-
-**Causa:** MySQL no está corriendo o no es accesible en el puerto `3308`.
-
-**Solución:**
 ```bash
-docker compose up -d
-docker ps  # Verificar que mysql_server está en estado "Up"
+mvn spring-boot:run
 ```
 
-### `Access denied for user 'root'@'localhost'`
+## 6. Interfaz web
 
-**Causa:** Las credenciales no coinciden.
+La interfaz web permite usar la aplicación sin necesidad de Postman. Esto hace que el proyecto sea más cómodo de enseñar y más fácil de entender en una demostración.
 
-**Solución:** Verifica que en `application.properties` las credenciales son `root` / `root`, y que el contenedor MySQL usa las mismas.
+Desde el navegador se pueden gestionar clientes, empleados, proyectos y tareas. Cada sección está pensada para trabajar con operaciones básicas de listado, creación, edición y eliminación.
 
-### Los datos desaparecen al reiniciar la app
+Rutas principales:
 
-**Causa:** `spring.jpa.hibernate.ddl-auto=create` recrea las tablas en cada arranque.
+- `/`
+- `/dashboard`
+- `/clientes`
+- `/empleados`
+- `/proyectos`
+- `/tareas`
 
-**Solución:** Cambia el valor a `update` para persistir los datos entre reinicios:
-```properties
-spring.jpa.hibernate.ddl-auto=update
-```
+La ruta principal lleva al dashboard y sirve como punto de entrada a la aplicación. Esta parte es especialmente útil para el vídeo de entrega porque permite enseñar el funcionamiento real del proyecto de forma visual.
 
-### Puerto `8099` en uso
+## 7. API REST
 
-**Causa:** Otro proceso está usando ese puerto.
+La API REST permite interactuar con la aplicación mediante peticiones HTTP. Es útil para probar el comportamiento desde Postman, para automatizar pruebas y para comprobar que la aplicación responde correctamente sin depender de la interfaz web.
 
-**Solución:**
+Cada entidad tiene operaciones CRUD:
+
+- `GET` consulta datos
+- `POST` crea datos
+- `PUT` actualiza datos
+- `DELETE` elimina datos
+
+### Endpoints principales
+
+| Método | Endpoint | Descripción |
+| --- | --- | --- |
+| `GET` | `/api/clientes` | Listar clientes |
+| `GET` | `/api/clientes/{id}` | Obtener cliente por id |
+| `POST` | `/api/clientes` | Crear cliente |
+| `PUT` | `/api/clientes/{id}` | Actualizar cliente |
+| `DELETE` | `/api/clientes/{id}` | Eliminar cliente |
+| `GET` | `/api/empleados` | Listar empleados |
+| `GET` | `/api/empleados/{id}` | Obtener empleado por id |
+| `POST` | `/api/empleados` | Crear empleado |
+| `PUT` | `/api/empleados/{id}` | Actualizar empleado |
+| `DELETE` | `/api/empleados/{id}` | Eliminar empleado |
+| `GET` | `/api/proyectos` | Listar proyectos |
+| `GET` | `/api/proyectos/{id}` | Obtener proyecto por id |
+| `POST` | `/api/proyectos` | Crear proyecto |
+| `PUT` | `/api/proyectos/{id}` | Actualizar proyecto |
+| `DELETE` | `/api/proyectos/{id}` | Eliminar proyecto |
+| `GET` | `/api/tareas` | Listar tareas |
+| `GET` | `/api/tareas/{id}` | Obtener tarea por id |
+| `POST` | `/api/tareas` | Crear tarea |
+| `PUT` | `/api/tareas/{id}` | Actualizar tarea |
+| `DELETE` | `/api/tareas/{id}` | Eliminar tarea |
+
+## 8. Casos de prueba
+
+Este apartado cumple la parte del enunciado que pide definir al menos cinco casos de prueba.
+
+| Caso | Qué se prueba | Datos de entrada | Resultado esperado |
+| --- | --- | --- | --- |
+| Alta de cliente | Crear un cliente | Nombre, empresa y teléfono | El cliente se guarda y aparece en el listado |
+| Consulta de clientes | Consultar clientes existentes | GET `/api/clientes` o ruta `/clientes` | Se muestra la lista de clientes |
+| Modificación de proyecto | Editar un proyecto | Nuevo nombre o fechas | El proyecto queda actualizado |
+| Eliminación de empleado | Eliminar un empleado existente | ID de empleado | El empleado desaparece del sistema |
+| Consulta de registro inexistente | Consultar un ID inexistente | GET `/api/empleados/9999` | Respuesta `404 Not Found` |
+
+### Desarrollo de los casos
+
+1. **Alta de cliente**
+   Objetivo: comprobar que se puede registrar un cliente nuevo.
+   Datos usados: nombre, empresa y teléfono.
+   Pasos: abrir formulario o enviar petición de creación, guardar y revisar listado.
+   Resultado esperado: el cliente queda almacenado.
+   Importancia: valida una operación básica del sistema.
+
+2. **Consulta de clientes**
+   Objetivo: comprobar que los clientes existentes pueden consultarse.
+   Datos usados: listado actual de clientes.
+   Pasos: acceder a `/clientes` o hacer `GET /api/clientes`.
+   Resultado esperado: la información se muestra correctamente.
+   Importancia: valida lectura de datos ya guardados.
+
+3. **Modificación de proyecto**
+   Objetivo: comprobar que un proyecto puede actualizarse.
+   Datos usados: nuevo nombre o nuevas fechas.
+   Pasos: editar proyecto, guardar cambios y revisar resultado.
+   Resultado esperado: el proyecto queda actualizado.
+   Importancia: valida que la edición funciona correctamente.
+
+4. **Eliminación de empleado**
+   Objetivo: comprobar que un empleado puede eliminarse.
+   Datos usados: identificador del empleado.
+   Pasos: seleccionar empleado, eliminar y comprobar listado.
+   Resultado esperado: el empleado desaparece del sistema.
+   Importancia: valida la operación de borrado.
+
+5. **Consulta de registro inexistente**
+   Objetivo: comprobar la respuesta ante un ID no válido.
+   Datos usados: `GET /api/empleados/9999`.
+   Pasos: lanzar la petición con un ID inexistente.
+   Resultado esperado: respuesta `404 Not Found`.
+   Importancia: valida que el error se gestiona de forma controlada.
+
+## 9. Pruebas unitarias
+
+Una prueba unitaria sirve para comprobar una parte pequeña del código de forma aislada. En este proyecto se prueban los servicios porque ahí se encuentra la lógica de negocio y porque es la capa más adecuada para verificar comportamiento sin arrancar toda la aplicación.
+
+No se usa base de datos real en estas pruebas porque eso las haría más lentas y más dependientes del entorno. En su lugar se usa **Mockito**, que permite simular los repositorios y comprobar si el servicio hace la llamada correcta.
+
+Se utiliza:
+
+- `JUnit 5`
+- `Mockito`
+- `@ExtendWith(MockitoExtension.class)`
+- `@Mock`
+- `@InjectMocks`
+
+Estas pruebas unitarias:
+
+- no usan base de datos real
+- no usan MySQL
+- no usan Docker
+- no usan `@SpringBootTest`
+
+### ClienteServiceTest
+
+- `testCrearCliente`: comprueba que un cliente puede guardarse correctamente y que el servicio llama al repositorio.
+- `testListarClientes`: comprueba que el servicio devuelve la lista esperada.
+- `testEliminarCliente`: comprueba que se llama a `deleteById` con el identificador correcto.
+
+### EmpleadoServiceTest
+
+- `testCrearEmpleado`: comprueba el guardado correcto de un empleado y la llamada al repositorio.
+- `testListarEmpleados`: verifica que se listan los empleados simulados.
+- `testEliminarEmpleado`: comprueba la eliminación por id mediante el repositorio mockeado.
+
+### ProyectoServiceTest
+
+- `testCrearProyecto`: valida la creación de un proyecto nuevo.
+- `testListarProyectos`: comprueba la consulta de varios proyectos.
+- `testActualizarProyecto`: valida que se actualizan correctamente los datos del proyecto y que se guarda el objeto esperado.
+
+En conjunto, estas pruebas comprueban la lógica de servicio y la interacción correcta con el repositorio simulado.
+
+## 10. Prueba de integración
+
+Una prueba de integración comprueba que varias partes del sistema funcionan juntas. En lugar de revisar solo un método aislado, verifica el comportamiento del flujo completo entre varias capas.
+
+En SmartFenix, la prueba de integración principal está en la clase:
+
+- `EmpleadoControllerIntegrationTest`
+
+### Tecnologías usadas
+
+- `Spring Boot Test`: arranca el contexto de Spring para ejecutar la prueba en un entorno parecido al real.
+- `MockMvc`: permite simular peticiones HTTP sin abrir manualmente el servidor en un navegador.
+- `H2`: se usa como base de datos en memoria para no depender de MySQL real.
+- `@SpringBootTest`: carga la aplicación para la prueba.
+- `@AutoConfigureMockMvc`: prepara `MockMvc`.
+- `@ActiveProfiles("test")`: activa el perfil de pruebas.
+
+### Qué comprueba cada prueba
+
+- `testListarEmpleadosDevuelveOk`: comprueba que `GET /api/empleados` responde correctamente.
+- `testCrearEmpleadoFlujoCompleto`: comprueba que se puede crear un empleado mediante `POST`.
+- `testConsultarEmpleadoInexistenteDevuelveNotFound`: comprueba que un ID inexistente devuelve `404`.
+
+### Flujo de integración
+
+`Controller -> Service -> Repository -> H2 en memoria`
+
+Esta prueba no depende de MySQL real ni de Docker, lo que permite ejecutarla en cualquier entorno con Maven y Java 21.
+
+## 11. Ejecución de pruebas
+
+Las pruebas pueden ejecutarse desde terminal o desde IntelliJ IDEA.
+
+### Desde terminal
+
 ```bash
-# Encontrar el proceso que usa el puerto
-sudo lsof -i :8099
-# Matarlo
-kill -9 <PID>
+mvn test
 ```
 
----
+### Desde IntelliJ
 
-##  Autor
+1. abrir la carpeta `src/test/java`
+2. elegir una clase de test o toda la carpeta
+3. usar la opción `Run` o `Debug`
 
-**SmartFenix API** — Proyecto de gestión empresarial con Spring Boot 3.2.5
+### Resultado validado
 
----
+```text
+BUILD SUCCESS
+Tests run: 12
+Failures: 0
+Errors: 0
+Skipped: 0
+```
+
+Esto significa que:
+
+- la compilación ha terminado correctamente
+- no hay fallos de aserciones
+- no hay errores de ejecución
+- todas las pruebas previstas han terminado bien
+
+## 12. Depuración
+
+Depurar significa ejecutar el programa paso a paso para observar qué está ocurriendo internamente. Es útil para entender mejor el flujo del código y detectar errores de lógica.
+
+Un **breakpoint** es un punto de parada que hace que la ejecución se detenga en una línea concreta. A partir de ahí se pueden observar variables, objetos y resultados parciales.
+
+**Step Over** permite avanzar línea a línea sin entrar en todos los métodos internos.
+
+Inspeccionar variables sirve para comprobar cómo cambian los datos durante la ejecución.
+
+### Métodos recomendados para depurar
+
+- `ClienteService.save(...)`
+- `ProyectoService.update(...)`
+- `EmpleadoService.update(...)`
+
+### Pasos útiles para el vídeo
+
+1. abrir el proyecto en IntelliJ
+2. colocar un breakpoint en un método de servicio
+3. arrancar la aplicación o un test en modo Debug
+4. avanzar con Step Over
+5. inspeccionar variables
+6. explicar cómo cambia el flujo
+
+## 13. Incidencias y soluciones
+
+### 1. Documentación antigua contradictoria
+
+Problema: existían documentos antiguos con puertos y contraseñas diferentes, además de explicaciones erróneas sobre las pruebas.
+
+Solución: se revisó la documentación y se dejó una única versión coherente y actualizada.
+
+### 2. Puerto 8099 ocupado
+
+Problema: podía quedar una instancia antigua de Java usando el puerto `8099`, lo que impedía arrancar la aplicación.
+
+Solución: comprobar el proceso con:
+
+```bash
+lsof -i :8099
+```
+
+y cerrar la instancia anterior.
+
+### 3. Diferencia entre MySQL real y H2
+
+Problema: podía confundirse la base de datos de la aplicación con la base de datos de pruebas.
+
+Solución: dejar claro que MySQL se usa para la aplicación real y H2 para la prueba de integración.
+
+### 4. Evitar Docker en tests
+
+Problema: si los tests dependieran de Docker, podrían fallar en otro ordenador aunque el código estuviera bien.
+
+Solución: usar Mockito para unitarias y H2 para integración, evitando dependencia de Docker en pruebas automatizadas.
+
+## 14. Conclusión
+
+Con este proyecto he aprendido a separar mejor la parte de aplicación real y la parte de pruebas. También he visto que verificar un programa no consiste solo en comprobar si arranca, sino en diseñar casos de prueba, probar la lógica de negocio y revisar cómo responde el sistema en situaciones normales y en errores controlados.
+
+Las pruebas ayudan a detectar errores antes de entregar el proyecto y hacen que el funcionamiento quede mejor justificado. También he comprobado que es importante diferenciar entre pruebas unitarias e integración, porque cada una revisa una parte distinta del sistema.
+
+La depuración con IntelliJ también ha sido útil para entender el flujo interno del programa y ver cómo cambian los valores paso a paso.
+
+Por todo esto, SmartFenix cumple el resultado de aprendizaje **RA3**, ya que el proyecto ha sido verificado mediante casos de prueba, pruebas unitarias, prueba de integración y depuración.
+
+## 15. Anexo del vídeo demo
+
+Guion recomendado para grabar el vídeo:
+
+1. presentar el proyecto y la actividad
+2. enseñar la estructura en IntelliJ
+3. enseñar las entidades principales
+4. enseñar servicios y controladores
+5. enseñar la interfaz web
+6. crear un registro desde la web
+7. enseñar la API REST
+8. ejecutar `mvn test`
+9. mostrar `BUILD SUCCESS`
+10. enseñar un test unitario
+11. enseñar la prueba de integración
+12. poner un breakpoint
+13. ejecutar Debug
+14. inspeccionar variables
+15. cerrar con una conclusión final sobre la verificación

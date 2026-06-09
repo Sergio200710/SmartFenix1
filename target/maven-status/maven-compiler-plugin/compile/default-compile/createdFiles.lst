@@ -10,8 +10,8 @@ com/smartfenix/domain/Tarea$TareaBuilder.class
 com/smartfenix/repository/EmpleadoRepository.class
 com/smartfenix/DataLoader.class
 com/smartfenix/service/TareaService.class
-com/smartfenix/controller/TareaController.class
 com/smartfenix/domain/Empleado$EmpleadoBuilder.class
+com/smartfenix/controller/TareaController.class
 com/smartfenix/controller/web/TareaWebController.class
 com/smartfenix/repository/ProyectoRepository.class
 com/smartfenix/controller/web/EmpleadoWebController.class
@@ -20,8 +20,8 @@ com/smartfenix/domain/Cliente$ClienteBuilder.class
 com/smartfenix/repository/TareaRepository.class
 com/smartfenix/controller/web/ClienteWebController.class
 com/smartfenix/service/EmpleadoService.class
-com/smartfenix/repository/ClienteRepository.class
 com/smartfenix/domain/Cliente.class
+com/smartfenix/repository/ClienteRepository.class
 com/smartfenix/service/ClienteService.class
 com/smartfenix/domain/Proyecto$ProyectoBuilder.class
 com/smartfenix/domain/Empleado.class

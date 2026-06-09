@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memoria SmartFenix</title>
+  <link rel="stylesheet" href="assets/memoria-style.css">
+</head>
+<body>
+  <div class="document">
+    <section class="page cover">
+      <div class="cover-card">
+        <div class="cover-kicker">Entornos de Desarrollo · RA3</div>
+        <h1>MEMORIA DEL PROYECTO SMARTFENIX</h1>
+        <h2>Verificación y pruebas de una aplicación Spring Boot</h2>
+        <div class="cover-grid">
+          <div class="cover-item">
+            <span class="label">Actividad</span>
+            <span class="value">Entornos de Desarrollo</span>
+          </div>
+          <div class="cover-item">
+            <span class="label">Resultado de aprendizaje</span>
+            <span class="value">RA3</span>
+          </div>
+          <div class="cover-item">
+            <span class="label">Alumno</span>
+            <span class="value">Sergio Hidalgo López</span>
+          </div>
+          <div class="cover-item">
+            <span class="label">Curso</span>
+            <span class="value">1º DAM</span>
+          </div>
+          <div class="cover-item">
+            <span class="label">Proyecto</span>
+            <span class="value">SmartFenix</span>
+          </div>
+          <div class="cover-item">
+            <span class="label">Fecha</span>
+            <span class="value">Mayo 2026</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page content">
+      <section class="section">
+        <h2>Índice</h2>
+        <div class="rule"></div>
+        <p class="intro">Resumen visual de los apartados principales incluidos en la memoria final.</p>
+        <div class="toc">
+          <div class="toc-item">1. Resumen del proyecto</div>
+          <div class="toc-item">2. Tecnologías utilizadas</div>
+          <div class="toc-item">3. Arquitectura del sistema</div>
+          <div class="toc-item">4. Entidades principales</div>
+          <div class="toc-item">5. Configuración del entorno</div>
+          <div class="toc-item">6. Interfaz web y API REST</div>
+          <div class="toc-item">7. Casos de prueba</div>
+          <div class="toc-item">8. Pruebas unitarias</div>
+          <div class="toc-item">9. Prueba de integración</div>
+          <div class="toc-item">10. Depuración del sistema</div>
+          <div class="toc-item">11. Resultados</div>
+          <div class="toc-item">12. Incidencias y conclusión</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Resumen visual del proyecto</h2>
+        <div class="rule"></div>
+        <p class="intro">Vista rápida de los datos más importantes del proyecto y del estado final de las pruebas.</p>
+        <div class="cards">
+          <div class="card">
+            <div class="eyebrow">Proyecto</div>
+            <div class="main">SmartFenix</div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">Tecnología principal</div>
+            <div class="main">Spring Boot 3.2.5 + Java 21</div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">Base de datos real</div>
+            <div class="main">MySQL 8.0 en Docker</div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">Resultado de pruebas</div>
+            <div class="main">12 tests superados</div>
+          </div>
+        </div>
+        <div class="highlight-grid" style="margin-top:16px;">
+          <div class="box">
+            <h3>Configuración principal</h3>
+            <p><strong>Aplicación:</strong> http://localhost:8099</p>
+            <p><strong>MySQL:</strong> localhost:3308</p>
+            <p><strong>phpMyAdmin:</strong> http://localhost:8090</p>
+            <p><strong>Credenciales:</strong> root / root</p>
+          </div>
+          <div class="box success">
+            <h3>Resultado de pruebas</h3>
+            <p><strong>BUILD SUCCESS</strong></p>
+            <p>Tests run: 12</p>
+            <p>Failures: 0</p>
+            <p>Errors: 0</p>
+            <p>Skipped: 0</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section compact">
+        <h2>Descripción general</h2>
+        <div class="rule"></div>
+        <p class="intro">Explicación breve del objetivo del proyecto, del problema que resuelve y de sus dos formas principales de uso.</p>
+        <p>SmartFenix es una aplicación desarrollada con Spring Boot para gestionar clientes, empleados, proyectos y tareas de una forma más organizada. La idea principal del proyecto es reunir en una sola aplicación información que normalmente estaría repartida en distintos sitios, de manera que sea más fácil consultarla, modificarla y comprobar su estado.</p>
+        <p>El proyecto resuelve el problema de llevar el control de datos empresariales de forma desordenada. En lugar de depender de herramientas separadas, SmartFenix permite centralizar clientes o empresas, empleados internos, proyectos asociados a un cliente y tareas asignadas a proyectos y empleados.</p>
+        <p>Desde la aplicación, el usuario puede crear registros nuevos, consultar información guardada, modificar datos existentes y eliminar registros cuando sea necesario. La interfaz web con Thymeleaf está pensada para trabajar desde el navegador, mientras que la API REST está pensada para realizar peticiones HTTP desde herramientas como Postman o desde pruebas automáticas.</p>
+      </section>
+
+      <section class="section page-break">
+        <h2>Tecnologías utilizadas</h2>
+        <div class="rule"></div>
+        <p class="intro">Tabla resumen de las tecnologías que forman el proyecto y del papel que cumple cada una dentro de la aplicación y de las pruebas.</p>
+        <table class="tech-table">
+          <thead>
+            <tr><th>Tecnología</th><th>Versión</th><th>Explicación</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Java</td><td>21</td><td>Lenguaje principal del proyecto.</td></tr>
+            <tr><td>Spring Boot</td><td>3.2.5</td><td>Permite crear la aplicación de forma rápida y organizada.</td></tr>
+            <tr><td>Maven</td><td>-</td><td>Gestiona dependencias, compilación y pruebas.</td></tr>
+            <tr><td>Spring Data JPA</td><td>-</td><td>Facilita el acceso a datos mediante repositorios.</td></tr>
+            <tr><td>Spring Validation</td><td>-</td><td>Ayuda a validar formularios y peticiones.</td></tr>
+            <tr><td>Lombok</td><td>1.18.32</td><td>Reduce código repetitivo.</td></tr>
+            <tr><td>MySQL</td><td>8.0</td><td>Base de datos real usada por la aplicación.</td></tr>
+            <tr><td>Docker Compose</td><td>-</td><td>Levanta MySQL y phpMyAdmin.</td></tr>
+            <tr><td>phpMyAdmin</td><td>-</td><td>Permite visualizar la base de datos.</td></tr>
+            <tr><td>Thymeleaf</td><td>-</td><td>Se usa para la interfaz web.</td></tr>
+            <tr><td>JUnit 5</td><td>-</td><td>Framework principal de pruebas.</td></tr>
+            <tr><td>Mockito</td><td>-</td><td>Simula repositorios en unitarias.</td></tr>
+            <tr><td>MockMvc</td><td>-</td><td>Simula peticiones HTTP en integración.</td></tr>
+            <tr><td>H2</td><td>-</td><td>Base de datos en memoria para integración.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Arquitectura del sistema</h2>
+        <div class="rule"></div>
+        <p class="intro">La aplicación sigue una arquitectura por capas para separar responsabilidades y facilitar mantenimiento, pruebas y comprensión del flujo interno.</p>
+        <div class="cols-2">
+          <div class="box">
+            <h3>Capas principales</h3>
+            <p><strong>Domain:</strong> contiene las entidades JPA y representa la estructura principal de los datos.</p>
+            <p><strong>Repository:</strong> contiene interfaces que extienden <code>JpaRepository</code> y permiten guardar, buscar, listar y eliminar registros.</p>
+            <p><strong>Service:</strong> concentra la lógica de negocio y evita que el controlador acceda directamente al repositorio.</p>
+            <p><strong>Controller:</strong> recibe peticiones HTTP y devuelve vistas web o respuestas JSON.</p>
+          </div>
+          <div class="schema">
+            <h3>Arquitectura general</h3>
+            <div class="flow">
+              <div class="flow-box">Usuario / Navegador / Postman</div>
+              <div class="arrow">↓</div>
+              <div class="flow-box">Controller</div>
+              <div class="arrow">↓</div>
+              <div class="flow-box">Service</div>
+              <div class="arrow">↓</div>
+              <div class="flow-box">Repository</div>
+              <div class="arrow">↓</div>
+              <div class="flow-box">Base de datos MySQL</div>
+            </div>
+          </div>
+        </div>
+        <div class="box" style="margin-top:16px;">
+          <h3>Pruebas unitarias</h3>
+          <div class="flow">
+            <div class="flow-box">Service</div>
+            <div class="arrow">↓</div>
+            <div class="flow-box">Repository simulado con Mockito</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Entidades principales</h2>
+        <div class="rule"></div>
+        <p class="intro">Las cuatro entidades centrales del sistema representan la información principal que se guarda y se gestiona en la aplicación.</p>
+        <table class="data-table">
+          <thead>
+            <tr><th>Entidad</th><th>Campos principales</th><th>Función</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Cliente</td><td>nombre, empresa, telefono</td><td>Representa una empresa o persona que solicita trabajos.</td></tr>
+            <tr><td>Empleado</td><td>nombre, email, rol</td><td>Representa trabajadores internos.</td></tr>
+            <tr><td>Proyecto</td><td>nombre, fechaInicio, fechaFin, cliente</td><td>Representa trabajos o proyectos asociados a un cliente.</td></tr>
+            <tr><td>Tarea</td><td>descripcion, estado, proyecto, empleado</td><td>Representa trabajos concretos dentro de un proyecto.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section page-break">
+        <h2>Configuración del entorno</h2>
+        <div class="rule"></div>
+        <p class="intro">Resumen de la configuración necesaria para ejecutar la aplicación real y de la separación entre el entorno de uso normal y el entorno de pruebas.</p>
+        <div class="highlight-grid">
+          <div class="box">
+            <h3>Configuración técnica</h3>
+            <ul>
+              <li><strong>Java 21</strong> para compilar y ejecutar la aplicación.</li>
+              <li><strong>Maven</strong> para dependencias y comandos como <code>mvn test</code> o <code>mvn spring-boot:run</code>.</li>
+              <li><strong>Docker Compose</strong> para levantar MySQL y phpMyAdmin.</li>
+              <li><strong>MySQL real</strong> para la ejecución normal de la aplicación.</li>
+              <li><strong>H2</strong> solo para la prueba de integración.</li>
+              <li><strong>phpMyAdmin</strong> para visualizar la base de datos desde el navegador.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Direcciones principales</h3>
+            <p><strong>Aplicación:</strong> http://localhost:8099</p>
+            <p><strong>MySQL:</strong> localhost:3308</p>
+            <p><strong>phpMyAdmin:</strong> http://localhost:8090</p>
+            <p><strong>Usuario:</strong> root</p>
+            <p><strong>Contraseña:</strong> root</p>
+          </div>
+        </div>
+        <div class="box" style="margin-top:16px;">
+          <h3>Comandos principales</h3>
+          <pre>docker compose up -d
+docker compose ps
+mvn test
+mvn spring-boot:run</pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Interfaz web y API REST</h2>
+        <div class="rule"></div>
+        <p class="intro">La aplicación puede usarse desde el navegador o mediante peticiones HTTP, lo que facilita tanto la demostración visual como la verificación técnica.</p>
+        <div class="cols-2">
+          <div class="box">
+            <h3>Interfaz web</h3>
+            <p>La interfaz web permite gestionar clientes, empleados, proyectos y tareas directamente desde el navegador.</p>
+            <ul>
+              <li><code>/</code></li>
+              <li><code>/dashboard</code></li>
+              <li><code>/clientes</code></li>
+              <li><code>/empleados</code></li>
+              <li><code>/proyectos</code></li>
+              <li><code>/tareas</code></li>
+            </ul>
+            <p>Cada sección permite listar, crear, editar y eliminar registros.</p>
+          </div>
+          <div class="box">
+            <h3>API REST</h3>
+            <p>La API REST permite trabajar con Postman o con pruebas automáticas como MockMvc.</p>
+            <ul>
+              <li><strong>GET</strong> consulta datos</li>
+              <li><strong>POST</strong> crea datos</li>
+              <li><strong>PUT</strong> actualiza datos</li>
+              <li><strong>DELETE</strong> elimina datos</li>
+            </ul>
+            <p>Todos los endpoints principales están disponibles bajo <code>/api</code>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Casos de prueba</h2>
+        <div class="rule"></div>
+        <p class="intro">Se han definido cinco casos de prueba que cubren operaciones funcionales básicas y un caso de error controlado.</p>
+        <table class="data-table">
+          <thead>
+            <tr><th>Caso</th><th>Qué se prueba</th><th>Datos de entrada</th><th>Resultado esperado</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Alta de cliente</td><td>Crear un cliente</td><td>Nombre, empresa y teléfono</td><td>El cliente se guarda y aparece en el listado.</td></tr>
+            <tr><td>Consulta de clientes</td><td>Consultar clientes existentes</td><td>GET <code>/api/clientes</code> o ruta <code>/clientes</code></td><td>Se muestra la lista de clientes.</td></tr>
+            <tr><td>Modificación de proyecto</td><td>Editar un proyecto</td><td>Nuevo nombre o fechas</td><td>El proyecto queda actualizado.</td></tr>
+            <tr><td>Eliminación de empleado</td><td>Eliminar un empleado existente</td><td>ID de empleado</td><td>El empleado desaparece del sistema.</td></tr>
+            <tr><td>Consulta de registro inexistente</td><td>Consultar un ID inexistente</td><td>GET <code>/api/empleados/9999</code></td><td>Respuesta <code>404 Not Found</code>.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section page-break">
+        <h2>Pruebas unitarias</h2>
+        <div class="rule"></div>
+        <p class="intro">Las pruebas unitarias revisan la lógica de negocio de forma aislada, sin arrancar toda la aplicación y sin depender de una base de datos real.</p>
+        <div class="cols-2">
+          <div class="box">
+            <h3>Configuración usada</h3>
+            <ul>
+              <li>JUnit 5</li>
+              <li>Mockito</li>
+              <li><code>@ExtendWith(MockitoExtension.class)</code></li>
+              <li><code>@Mock</code></li>
+              <li><code>@InjectMocks</code></li>
+            </ul>
+            <p>Estas pruebas no usan base de datos real, no usan MySQL, no usan Docker y no usan <code>@SpringBootTest</code>.</p>
+          </div>
+          <div class="schema">
+            <h3>Testing unitario</h3>
+            <div class="flow">
+              <div class="flow-box">Service</div>
+              <div class="arrow">↓</div>
+              <div class="flow-box">Repository simulado con Mockito</div>
+            </div>
+          </div>
+        </div>
+        <table class="data-table" style="margin-top:16px;">
+          <thead>
+            <tr><th>Clase de test</th><th>Métodos comprobados</th><th>Qué verifica</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>ClienteServiceTest</code></td><td><code>testCrearCliente</code>, <code>testListarClientes</code>, <code>testEliminarCliente</code></td><td>Guardado, listado y borrado de clientes.</td></tr>
+            <tr><td><code>EmpleadoServiceTest</code></td><td><code>testCrearEmpleado</code>, <code>testListarEmpleados</code>, <code>testEliminarEmpleado</code></td><td>Guardado, listado y borrado de empleados.</td></tr>
+            <tr><td><code>ProyectoServiceTest</code></td><td><code>testCrearProyecto</code>, <code>testListarProyectos</code>, <code>testActualizarProyecto</code></td><td>Creación, consulta y actualización de proyectos.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Prueba de integración</h2>
+        <div class="rule"></div>
+        <p class="intro">La prueba de integración comprueba que varias capas funcionan juntas dentro del contexto de Spring, usando H2 en memoria y MockMvc.</p>
+        <div class="cols-2">
+          <div class="box">
+            <h3>Configuración</h3>
+            <ul>
+              <li><code>Spring Boot Test</code></li>
+              <li><code>MockMvc</code></li>
+              <li><code>@SpringBootTest</code></li>
+              <li><code>@AutoConfigureMockMvc</code></li>
+              <li><code>@ActiveProfiles("test")</code></li>
+              <li><code>H2 en memoria</code></li>
+            </ul>
+          </div>
+          <div class="schema">
+            <h3>Testing integración</h3>
+            <div class="flow">
+              <div class="flow-box">MockMvc</div>
+              <div class="arrow">↓</div>
+              <div class="flow-box">Controller</div>
+              <div class="arrow">↓</div>
+              <div class="flow-box">Service</div>
+              <div class="arrow">↓</div>
+              <div class="flow-box">Repository</div>
+              <div class="arrow">↓</div>
+              <div class="flow-box">H2 en memoria</div>
+            </div>
+          </div>
+        </div>
+        <table class="data-table" style="margin-top:16px;">
+          <thead>
+            <tr><th>Prueba</th><th>Qué comprueba</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>testListarEmpleadosDevuelveOk</code></td><td>Que <code>GET /api/empleados</code> responde correctamente.</td></tr>
+            <tr><td><code>testCrearEmpleadoFlujoCompleto</code></td><td>Que se puede crear un empleado mediante <code>POST</code>.</td></tr>
+            <tr><td><code>testConsultarEmpleadoInexistenteDevuelveNotFound</code></td><td>Que un ID inexistente devuelve <code>404</code>.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Depuración del sistema</h2>
+        <div class="rule"></div>
+        <p class="intro">La depuración ayuda a entender el flujo interno del programa y a revisar cómo cambian los valores durante la ejecución.</p>
+        <div class="steps-box">
+          <ol>
+            <li>Poner un breakpoint en un método como <code>ClienteService.save(...)</code>, <code>ProyectoService.update(...)</code> o <code>EmpleadoService.update(...)</code>.</li>
+            <li>Ejecutar la aplicación o una prueba en modo <code>Debug</code>.</li>
+            <li>Avanzar paso a paso con <code>Step Over</code>.</li>
+            <li>Inspeccionar variables y objetos.</li>
+            <li>Comprobar cómo cambian los datos durante la ejecución.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section page-break">
+        <h2>Ejecución de pruebas y resultados</h2>
+        <div class="rule"></div>
+        <p class="intro">Las pruebas pueden ejecutarse tanto desde terminal como desde IntelliJ IDEA. El resultado final confirma que la suite completa pasa correctamente.</p>
+        <div class="highlight-grid">
+          <div class="box">
+            <h3>Ejecución</h3>
+            <pre>mvn test</pre>
+            <p>También es posible ejecutar clases de test concretas desde IntelliJ usando <code>Run</code> o <code>Debug</code>.</p>
+          </div>
+          <div class="box success">
+            <h3>Resultado</h3>
+            <p><strong>BUILD SUCCESS</strong></p>
+            <p>Tests run: 12</p>
+            <p>Failures: 0</p>
+            <p>Errors: 0</p>
+            <p>Skipped: 0</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Incidencias encontradas y soluciones</h2>
+        <div class="rule"></div>
+        <p class="intro">Durante la revisión de la documentación y de la ejecución del proyecto aparecieron varias incidencias reales que se resolvieron antes de la entrega.</p>
+        <table class="data-table">
+          <thead>
+            <tr><th>Incidencia</th><th>Causa</th><th>Solución</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Documentación antigua contradictoria</td><td>Existían documentos con puertos, contraseñas y descripciones de pruebas antiguas.</td><td>Revisar la documentación y dejar una única versión coherente.</td></tr>
+            <tr><td>Puerto 8099 ocupado</td><td>Quedaba una instancia antigua de Java usando el puerto.</td><td>Comprobar con <code>lsof -i :8099</code> y cerrar el proceso.</td></tr>
+            <tr><td>Confusión entre MySQL real y H2</td><td>Podía mezclarse la base de datos de la aplicación con la de pruebas.</td><td>Aclarar que MySQL es para la app real y H2 para integración.</td></tr>
+            <tr><td>Evitar dependencia de Docker en tests</td><td>Los tests podían depender del entorno local.</td><td>Usar Mockito en unitarias y H2 en integración.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section compact">
+        <h2>Conclusión</h2>
+        <div class="rule"></div>
+        <p class="intro">Cierre final de la memoria y relación del proyecto con el resultado de aprendizaje trabajado.</p>
+        <p>Con este proyecto se aprende que verificar una aplicación no consiste solo en mirar si arranca, sino en comprobar de forma ordenada que cada parte funciona como debe. A través de los casos de prueba, las pruebas unitarias, la prueba de integración y la depuración, se puede justificar mejor que el sistema responde correctamente.</p>
+        <p>Las pruebas ayudan a detectar errores antes de la entrega y permiten trabajar con más seguridad. También es importante separar las pruebas unitarias de las de integración, porque cada una revisa una parte distinta del proyecto.</p>
+        <p>La depuración con IntelliJ también ayuda mucho a entender el flujo interno del programa, porque permite ver paso a paso qué hace cada método y cómo cambian los datos.</p>
+        <p>Por todo esto, SmartFenix cumple el resultado de aprendizaje <strong>RA3</strong>, ya que el proyecto ha sido verificado mediante pruebas diseñadas y ejecutadas sobre el sistema.</p>
+      </section>
+    </section>
+  </div>
+</body>
+</html>
