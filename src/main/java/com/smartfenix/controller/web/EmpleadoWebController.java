@@ -1,6 +1,8 @@
 package com.smartfenix.controller.web;
 
 import com.smartfenix.domain.Empleado;
+import com.smartfenix.exception.RegistroNoEncontradoException;
+import com.smartfenix.exception.RegistroRelacionadoException;
 import com.smartfenix.service.EmpleadoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -79,8 +81,12 @@ public class EmpleadoWebController {
 
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        empleadoService.delete(id);
-        redirectAttributes.addFlashAttribute("mensaje", "Empleado eliminado correctamente.");
+        try {
+            empleadoService.delete(id);
+            redirectAttributes.addFlashAttribute("mensaje", "Empleado eliminado correctamente.");
+        } catch (RegistroNoEncontradoException | RegistroRelacionadoException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        }
         return "redirect:/empleados";
     }
 }

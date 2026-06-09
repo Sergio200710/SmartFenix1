@@ -1,7 +1,10 @@
 package com.smartfenix.service;
 
 import com.smartfenix.domain.Proyecto;
+import com.smartfenix.exception.RegistroNoEncontradoException;
+import com.smartfenix.exception.RegistroRelacionadoException;
 import com.smartfenix.repository.ProyectoRepository;
+import com.smartfenix.repository.TareaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ import java.util.Optional;
 public class ProyectoService {
 
     private final ProyectoRepository proyectoRepository;
+    private final TareaRepository tareaRepository;
 
     public List<Proyecto> findAll() {
         return proyectoRepository.findAll();
@@ -36,7 +40,17 @@ public class ProyectoService {
         });
     }
 
+    public boolean tieneTareasAsociadas(Long proyectoId) {
+        return tareaRepository.existsByProyectoId(proyectoId);
+    }
+
     public void delete(Long id) {
+        if (!proyectoRepository.existsById(id)) {
+            throw new RegistroNoEncontradoException("Proyecto no encontrado.");
+        }
+        if (tieneTareasAsociadas(id)) {
+            throw new RegistroRelacionadoException("No se puede eliminar el proyecto porque tiene tareas asociadas.");
+        }
         proyectoRepository.deleteById(id);
     }
 }

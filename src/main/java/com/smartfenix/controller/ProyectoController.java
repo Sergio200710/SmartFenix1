@@ -43,10 +43,7 @@ public class ProyectoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (proyectoService.findById(id).isPresent()) {
-            proyectoService.delete(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        proyectoService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

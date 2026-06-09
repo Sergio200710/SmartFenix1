@@ -36,7 +36,7 @@
           </div>
           <div class="cover-item">
             <span class="label">Fecha</span>
-            <span class="value">Mayo 2026</span>
+            <span class="value">Junio 2026</span>
           </div>
         </div>
       </div>
@@ -82,7 +82,7 @@
           </div>
           <div class="card">
             <div class="eyebrow">Resultado de pruebas</div>
-            <div class="main">12 tests superados</div>
+            <div class="main">18 tests superados</div>
           </div>
         </div>
         <div class="highlight-grid" style="margin-top:16px;">
@@ -96,7 +96,7 @@
           <div class="box success">
             <h3>Resultado de pruebas</h3>
             <p><strong>BUILD SUCCESS</strong></p>
-            <p>Tests run: 12</p>
+            <p>Tests run: 18</p>
             <p>Failures: 0</p>
             <p>Errors: 0</p>
             <p>Skipped: 0</p>
@@ -376,20 +376,33 @@ mvn spring-boot:run</pre>
       <section class="section page-break">
         <h2>Ejecución de pruebas y resultados</h2>
         <div class="rule"></div>
-        <p class="intro">Las pruebas pueden ejecutarse tanto desde terminal como desde IntelliJ IDEA. El resultado final confirma que la suite completa pasa correctamente.</p>
+        <p class="intro">Las pruebas pueden ejecutarse tanto desde terminal como desde IntelliJ IDEA. El resultado final confirma que la suite completa pasa correctamente y que la aplicación responde bien en sus rutas principales.</p>
         <div class="highlight-grid">
           <div class="box">
             <h3>Ejecución</h3>
             <pre>mvn test</pre>
-            <p>También es posible ejecutar clases de test concretas desde IntelliJ usando <code>Run</code> o <code>Debug</code>.</p>
+            <p>También se verificó el arranque real con <code>mvn spring-boot:run</code> y la comprobación HTTP de web y API.</p>
           </div>
           <div class="box success">
             <h3>Resultado</h3>
             <p><strong>BUILD SUCCESS</strong></p>
-            <p>Tests run: 12</p>
+            <p>Tests run: 18</p>
             <p>Failures: 0</p>
             <p>Errors: 0</p>
             <p>Skipped: 0</p>
+          </div>
+        </div>
+        <div class="highlight-grid" style="margin-top:16px;">
+          <div class="box">
+            <h3>Rutas comprobadas</h3>
+            <p><code>/</code>, <code>/dashboard</code>, <code>/clientes</code>, <code>/empleados</code>, <code>/proyectos</code> y <code>/tareas</code> respondieron correctamente.</p>
+            <p>También respondieron correctamente <code>/api/clientes</code>, <code>/api/empleados</code>, <code>/api/proyectos</code> y <code>/api/tareas</code>.</p>
+          </div>
+          <div class="box success">
+            <h3>Resultado funcional</h3>
+            <p>La aplicación arranca en <code>http://localhost:8099</code>.</p>
+            <p>No se produjeron errores 500 en los flujos de eliminación controlada tras la corrección final.</p>
+            <p>El sistema queda listo para demostración y entrega.</p>
           </div>
         </div>
       </section>
@@ -403,12 +416,80 @@ mvn spring-boot:run</pre>
             <tr><th>Incidencia</th><th>Causa</th><th>Solución</th></tr>
           </thead>
           <tbody>
-            <tr><td>Documentación antigua contradictoria</td><td>Existían documentos con puertos, contraseñas y descripciones de pruebas antiguas.</td><td>Revisar la documentación y dejar una única versión coherente.</td></tr>
-            <tr><td>Puerto 8099 ocupado</td><td>Quedaba una instancia antigua de Java usando el puerto.</td><td>Comprobar con <code>lsof -i :8099</code> y cerrar el proceso.</td></tr>
+            <tr><td>Documentación antigua contradictoria</td><td>Existían referencias antiguas en la memoria y en otros textos del proyecto.</td><td>Revisar la documentación y dejar una única versión coherente.</td></tr>
             <tr><td>Confusión entre MySQL real y H2</td><td>Podía mezclarse la base de datos de la aplicación con la de pruebas.</td><td>Aclarar que MySQL es para la app real y H2 para integración.</td></tr>
-            <tr><td>Evitar dependencia de Docker en tests</td><td>Los tests podían depender del entorno local.</td><td>Usar Mockito en unitarias y H2 en integración.</td></tr>
+            <tr><td>Eliminación directa de registros relacionados</td><td>Algunas entidades no podían borrarse si tenían relaciones activas por claves foráneas.</td><td>Comprobar dependencias antes de eliminar y devolver mensajes controlados.</td></tr>
+            <tr><td>Error 500 en <code>/api/proyectos</code> y <code>/api/tareas</code></td><td>Jackson intentaba serializar proxies lazy de Hibernate.</td><td>Ignorar metadatos internos de Hibernate en las entidades para devolver JSON válido.</td></tr>
           </tbody>
         </table>
+      </section>
+
+      <section class="section">
+        <h2>Eliminación controlada de registros relacionados</h2>
+        <div class="rule"></div>
+        <p class="intro">Durante las pruebas se detectó que algunos registros no podían eliminarse directamente porque estaban relacionados con otras entidades. Esto ocurre por las claves foráneas de la base de datos, que protegen la integridad de la información.</p>
+        <div class="highlight-grid">
+          <div class="box issue">
+            <h3>Casos detectados</h3>
+            <p>Un cliente no puede eliminarse si tiene proyectos asociados.</p>
+            <p>Un empleado no puede eliminarse si tiene tareas asignadas.</p>
+            <p>Un proyecto no puede eliminarse si tiene tareas asociadas.</p>
+          </div>
+          <div class="box success">
+            <h3>Solución aplicada</h3>
+            <p>Comprobar si existen registros relacionados antes de eliminar.</p>
+            <p>Bloquear la eliminación si existen dependencias.</p>
+            <p>Mostrar mensajes claros en web y respuestas controladas en la API.</p>
+          </div>
+        </div>
+        <table class="data-table" style="margin-top:16px;">
+          <thead>
+            <tr><th>Registro</th><th>Dependencia revisada</th><th>Resultado si tiene dependencia</th><th>Resultado si no tiene dependencia</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Cliente</td><td>Proyectos asociados</td><td>No se elimina y se muestra mensaje.</td><td>Se elimina correctamente.</td></tr>
+            <tr><td>Empleado</td><td>Tareas asignadas</td><td>No se elimina y se muestra mensaje.</td><td>Se elimina correctamente.</td></tr>
+            <tr><td>Proyecto</td><td>Tareas asociadas</td><td>No se elimina y se muestra mensaje.</td><td>Se elimina correctamente.</td></tr>
+            <tr><td>Tarea</td><td>Sin dependencias principales</td><td>Se elimina normalmente.</td><td>Se elimina correctamente.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Verificación de DELETE en web y API</h2>
+        <div class="rule"></div>
+        <p class="intro">Se comprobó el comportamiento real tanto desde la interfaz web como desde la API REST para asegurar que los errores quedan controlados y que los borrados válidos se completan correctamente.</p>
+        <div class="cols-2">
+          <div class="box">
+            <h3>Interfaz web</h3>
+            <p>Desde los listados se verificó que el usuario puede intentar eliminar registros y recibir siempre una respuesta controlada.</p>
+            <ul>
+              <li>Si el registro tiene relaciones, aparece un mensaje claro.</li>
+              <li>Si el registro no tiene relaciones, se elimina correctamente.</li>
+              <li>No aparece <code>Whitelabel Error Page</code>.</li>
+              <li>No aparece error 500.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>API REST</h3>
+            <table class="data-table">
+              <thead>
+                <tr><th>Situación</th><th>Código HTTP</th><th>Significado</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Eliminación correcta</td><td><code>204 No Content</code></td><td>El registro se ha eliminado.</td></tr>
+                <tr><td>Registro inexistente</td><td><code>404 Not Found</code></td><td>El ID no existe.</td></tr>
+                <tr><td>Registro con dependencias</td><td><code>409 Conflict</code></td><td>No se puede eliminar por relaciones existentes.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="box" style="margin-top:16px;">
+          <h3>Pruebas validadas</h3>
+          <p><strong>Conflictos controlados:</strong> <code>DELETE /api/clientes/1</code>, <code>DELETE /api/empleados/1</code> y <code>DELETE /api/proyectos/2</code> devolvieron <code>409 Conflict</code>.</p>
+          <p><strong>Eliminaciones correctas:</strong> <code>DELETE /api/tareas/1</code>, <code>DELETE /api/empleados/1</code>, <code>DELETE /api/proyectos/1</code> y <code>DELETE /api/clientes/1</code> devolvieron <code>204 No Content</code> cuando ya no existían dependencias.</p>
+          <p><strong>Registro inexistente:</strong> un segundo <code>DELETE /api/tareas/1</code> devolvió <code>404 Not Found</code>.</p>
+        </div>
       </section>
 
       <section class="section compact">
@@ -417,8 +498,8 @@ mvn spring-boot:run</pre>
         <p class="intro">Cierre final de la memoria y relación del proyecto con el resultado de aprendizaje trabajado.</p>
         <p>Con este proyecto se aprende que verificar una aplicación no consiste solo en mirar si arranca, sino en comprobar de forma ordenada que cada parte funciona como debe. A través de los casos de prueba, las pruebas unitarias, la prueba de integración y la depuración, se puede justificar mejor que el sistema responde correctamente.</p>
         <p>Las pruebas ayudan a detectar errores antes de la entrega y permiten trabajar con más seguridad. También es importante separar las pruebas unitarias de las de integración, porque cada una revisa una parte distinta del proyecto.</p>
-        <p>La depuración con IntelliJ también ayuda mucho a entender el flujo interno del programa, porque permite ver paso a paso qué hace cada método y cómo cambian los datos.</p>
-        <p>Por todo esto, SmartFenix cumple el resultado de aprendizaje <strong>RA3</strong>, ya que el proyecto ha sido verificado mediante pruebas diseñadas y ejecutadas sobre el sistema.</p>
+        <p>La depuración con IntelliJ también ayuda mucho a entender el flujo interno del programa, porque permite ver paso a paso qué hace cada método y cómo cambian los datos. Además, la verificación final ha permitido detectar y corregir un error real de serialización en la API REST.</p>
+        <p>Por todo esto, SmartFenix cumple mejor el resultado de aprendizaje <strong>RA3</strong>, ya que se han comprobado casos normales y casos de error, la aplicación gestiona correctamente restricciones de base de datos y la eliminación de datos se realiza de forma segura. El sistema queda listo para entrega y demostración.</p>
       </section>
     </section>
   </div>

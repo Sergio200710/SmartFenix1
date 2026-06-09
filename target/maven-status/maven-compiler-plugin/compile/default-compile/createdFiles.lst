@@ -15,7 +15,10 @@ com/smartfenix/controller/TareaController.class
 com/smartfenix/controller/web/TareaWebController.class
 com/smartfenix/repository/ProyectoRepository.class
 com/smartfenix/controller/web/EmpleadoWebController.class
+com/smartfenix/exception/RegistroRelacionadoException.class
+com/smartfenix/controller/RestExceptionHandler.class
 com/smartfenix/controller/web/DashboardController.class
+com/smartfenix/exception/RegistroNoEncontradoException.class
 com/smartfenix/domain/Cliente$ClienteBuilder.class
 com/smartfenix/repository/TareaRepository.class
 com/smartfenix/controller/web/ClienteWebController.class

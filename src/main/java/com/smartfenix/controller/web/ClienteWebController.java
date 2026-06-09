@@ -1,6 +1,8 @@
 package com.smartfenix.controller.web;
 
 import com.smartfenix.domain.Cliente;
+import com.smartfenix.exception.RegistroNoEncontradoException;
+import com.smartfenix.exception.RegistroRelacionadoException;
 import com.smartfenix.service.ClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -79,8 +81,14 @@ public class ClienteWebController {
 
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        clienteService.delete(id);
-        redirectAttributes.addFlashAttribute("mensaje", "Cliente eliminado correctamente.");
+        try {
+            clienteService.delete(id);
+            redirectAttributes.addFlashAttribute("mensaje", "Cliente eliminado correctamente.");
+        } catch (RegistroNoEncontradoException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        } catch (RegistroRelacionadoException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage() + " Elimina o reasigna primero sus proyectos.");
+        }
         return "redirect:/clientes";
     }
 }

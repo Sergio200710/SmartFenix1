@@ -43,10 +43,7 @@ public class TareaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (tareaService.findById(id).isPresent()) {
-            tareaService.delete(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        tareaService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

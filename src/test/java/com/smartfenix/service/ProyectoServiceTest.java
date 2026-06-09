@@ -1,7 +1,9 @@
 package com.smartfenix.service;
 
 import com.smartfenix.domain.Proyecto;
+import com.smartfenix.exception.RegistroRelacionadoException;
 import com.smartfenix.repository.ProyectoRepository;
+import com.smartfenix.repository.TareaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +22,9 @@ public class ProyectoServiceTest {
 
     @Mock
     private ProyectoRepository proyectoRepository;
+
+    @Mock
+    private TareaRepository tareaRepository;
 
     @InjectMocks
     private ProyectoService proyectoService;
@@ -83,5 +88,31 @@ public class ProyectoServiceTest {
         assertEquals(datosActualizados.getFechaFin(), proyectoActualizado.getFechaFin());
         verify(proyectoRepository).findById(1L);
         verify(proyectoRepository).save(proyectoExistente);
+    }
+
+    @Test
+    public void testEliminarProyecto() {
+        Long id = 4L;
+        when(proyectoRepository.existsById(id)).thenReturn(true);
+        when(tareaRepository.existsByProyectoId(id)).thenReturn(false);
+
+        proyectoService.delete(id);
+
+        verify(proyectoRepository).deleteById(id);
+    }
+
+    @Test
+    public void testNoEliminarProyectoConTareasAsociadas() {
+        Long id = 6L;
+        when(proyectoRepository.existsById(id)).thenReturn(true);
+        when(tareaRepository.existsByProyectoId(id)).thenReturn(true);
+
+        RegistroRelacionadoException exception = assertThrows(
+                RegistroRelacionadoException.class,
+                () -> proyectoService.delete(id)
+        );
+
+        assertEquals("No se puede eliminar el proyecto porque tiene tareas asociadas.", exception.getMessage());
+        verify(proyectoRepository, never()).deleteById(id);
     }
 }

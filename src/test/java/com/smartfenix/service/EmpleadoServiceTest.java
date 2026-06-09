@@ -1,7 +1,9 @@
 package com.smartfenix.service;
 
 import com.smartfenix.domain.Empleado;
+import com.smartfenix.exception.RegistroRelacionadoException;
 import com.smartfenix.repository.EmpleadoRepository;
+import com.smartfenix.repository.TareaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +20,9 @@ public class EmpleadoServiceTest {
 
     @Mock
     private EmpleadoRepository empleadoRepository;
+
+    @Mock
+    private TareaRepository tareaRepository;
 
     @InjectMocks
     private EmpleadoService empleadoService;
@@ -61,9 +66,26 @@ public class EmpleadoServiceTest {
     @Test
     public void testEliminarEmpleado() {
         Long id = 7L;
+        when(empleadoRepository.existsById(id)).thenReturn(true);
+        when(tareaRepository.existsByEmpleadoId(id)).thenReturn(false);
 
         empleadoService.delete(id);
 
         verify(empleadoRepository).deleteById(id);
+    }
+
+    @Test
+    public void testNoEliminarEmpleadoConTareasAsociadas() {
+        Long id = 8L;
+        when(empleadoRepository.existsById(id)).thenReturn(true);
+        when(tareaRepository.existsByEmpleadoId(id)).thenReturn(true);
+
+        RegistroRelacionadoException exception = assertThrows(
+                RegistroRelacionadoException.class,
+                () -> empleadoService.delete(id)
+        );
+
+        assertEquals("No se puede eliminar el empleado porque tiene tareas asignadas.", exception.getMessage());
+        verify(empleadoRepository, never()).deleteById(id);
     }
 }

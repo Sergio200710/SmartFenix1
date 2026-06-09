@@ -30,6 +30,10 @@
 
         <div th:if="${mensaje}" class="alert success" th:text="${mensaje}"></div>
         <div th:if="${error}" class="alert error" th:text="${error}"></div>
+        <div th:if="${param.error != null and param.error[0] == 'clienteConProyectos'}"
+             class="alert error">
+            No se puede eliminar este cliente porque tiene proyectos asociados. Elimina o reasigna primero sus proyectos.
+        </div>
 
         <div class="table-wrap">
             <table>

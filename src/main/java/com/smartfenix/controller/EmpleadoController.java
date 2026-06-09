@@ -43,10 +43,7 @@ public class EmpleadoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (empleadoService.findById(id).isPresent()) {
-            empleadoService.delete(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        empleadoService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

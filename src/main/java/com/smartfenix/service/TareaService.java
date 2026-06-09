@@ -1,6 +1,7 @@
 package com.smartfenix.service;
 
 import com.smartfenix.domain.Tarea;
+import com.smartfenix.exception.RegistroNoEncontradoException;
 import com.smartfenix.repository.TareaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,9 @@ public class TareaService {
     }
 
     public void delete(Long id) {
+        if (!tareaRepository.existsById(id)) {
+            throw new RegistroNoEncontradoException("Tarea no encontrada.");
+        }
         tareaRepository.deleteById(id);
     }
 }

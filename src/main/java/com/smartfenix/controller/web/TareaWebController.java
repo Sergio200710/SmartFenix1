@@ -1,6 +1,7 @@
 package com.smartfenix.controller.web;
 
 import com.smartfenix.domain.Tarea;
+import com.smartfenix.exception.RegistroNoEncontradoException;
 import com.smartfenix.service.EmpleadoService;
 import com.smartfenix.service.ProyectoService;
 import com.smartfenix.service.TareaService;
@@ -104,8 +105,12 @@ public class TareaWebController {
 
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        tareaService.delete(id);
-        redirectAttributes.addFlashAttribute("mensaje", "Tarea eliminada correctamente.");
+        try {
+            tareaService.delete(id);
+            redirectAttributes.addFlashAttribute("mensaje", "Tarea eliminada correctamente.");
+        } catch (RegistroNoEncontradoException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        }
         return "redirect:/tareas";
     }
 

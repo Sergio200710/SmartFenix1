@@ -10,7 +10,7 @@
 **Resultado de aprendizaje:** RA3 - Verifica el funcionamiento de programas diseñando y realizando pruebas  
 **Alumno:** Sergio Hidalgo López  
 **Curso:** 1º DAM  
-**Fecha:** Mayo 2026
+**Fecha:** Junio 2026
 
 ---
 
@@ -393,7 +393,7 @@ Resultado validado:
 
 ```text
 BUILD SUCCESS
-Tests run: 12
+Tests run: 18
 Failures: 0
 Errors: 0
 Skipped: 0
@@ -406,16 +406,110 @@ Esto significa que:
 - no hay errores de ejecución
 - toda la suite de pruebas prevista ha pasado correctamente
 
+Además de la suite automática, se realizó una comprobación funcional completa de la aplicación arrancando SmartFenix con:
+
+```bash
+mvn spring-boot:run
+```
+
+Durante esta verificación se confirmó que la aplicación arranca en `http://localhost:8099` y que responde correctamente en las rutas principales:
+
+- `/`
+- `/dashboard`
+- `/clientes`
+- `/empleados`
+- `/proyectos`
+- `/tareas`
+- `/api/clientes`
+- `/api/empleados`
+- `/api/proyectos`
+- `/api/tareas`
+
+Todas estas rutas devolvieron respuesta correcta, sin errores 500, una vez aplicada la corrección final de serialización en la API REST.
+
+Resumen de resultados obtenidos:
+
+- las rutas web responden correctamente
+- la API REST responde correctamente
+- `mvn test` finaliza con `BUILD SUCCESS`
+- la eliminación de registros relacionados está controlada
+- no se producen errores 500 al eliminar registros con dependencias
+- la aplicación queda lista para una demostración funcional
+
 ---
 
 ### 14. Incidencias encontradas y soluciones
 
 | Incidencia | Causa | Solución |
 | --- | --- | --- |
-| Documentación antigua contradictoria | Existían documentos con puertos, contraseñas y descripciones de pruebas antiguas | Revisar la documentación y dejar una única versión coherente |
-| Puerto 8099 ocupado | Quedaba una instancia antigua de Java usando el puerto | Comprobar con `lsof -i :8099` y cerrar el proceso |
+| Documentación antigua contradictoria | Existían referencias antiguas en la memoria y en otros textos del proyecto | Revisar la documentación y dejar una única versión coherente |
 | Confusión entre MySQL real y H2 | Podía mezclarse la base de datos de la aplicación con la de pruebas | Aclarar que MySQL es para la app real y H2 para integración |
-| Evitar dependencia de Docker en tests | Los tests podían depender del entorno local | Usar Mockito en unitarias y H2 en integración |
+| Eliminación directa de registros relacionados | Algunas entidades no podían borrarse si tenían relaciones activas por claves foráneas | Comprobar dependencias antes de eliminar y devolver mensajes controlados |
+| Error 500 en `/api/proyectos` y `/api/tareas` | Jackson intentaba serializar proxies lazy de Hibernate | Ignorar metadatos internos de Hibernate en las entidades para devolver JSON válido |
+
+#### 14.1 Eliminación controlada de registros relacionados
+
+Durante las pruebas se detectó que algunos registros no podían eliminarse directamente porque estaban relacionados con otras entidades del sistema. Este comportamiento es correcto desde el punto de vista de la base de datos, ya que las claves foráneas protegen la integridad de la información y evitan dejar datos huérfanos.
+
+Ejemplos comprobados:
+
+- un Cliente no puede eliminarse si tiene Proyectos asociados
+- un Empleado no puede eliminarse si tiene Tareas asignadas
+- un Proyecto no puede eliminarse si tiene Tareas asociadas
+
+La solución aplicada ha sido controlar la eliminación antes de ejecutarla:
+
+- comprobar si existen registros relacionados
+- bloquear la eliminación si existen dependencias
+- mostrar un mensaje claro en la interfaz web
+- devolver una respuesta controlada en la API REST
+- evitar errores 500 y páginas de error no controladas
+
+Tabla de eliminación controlada:
+
+| Registro | Dependencia revisada | Resultado si tiene dependencia | Resultado si no tiene dependencia |
+| --- | --- | --- | --- |
+| Cliente | Proyectos asociados | No se elimina y se muestra mensaje | Se elimina correctamente |
+| Empleado | Tareas asignadas | No se elimina y se muestra mensaje | Se elimina correctamente |
+| Proyecto | Tareas asociadas | No se elimina y se muestra mensaje | Se elimina correctamente |
+| Tarea | Sin dependencias principales | Se elimina normalmente | Se elimina correctamente |
+
+#### 14.2 Comprobación desde la API REST
+
+En la API REST se validó que las operaciones `DELETE` devuelven respuestas coherentes y útiles para el cliente HTTP:
+
+| Situación | Código HTTP | Significado |
+| --- | --- | --- |
+| Eliminación correcta | `204 No Content` | El registro se ha eliminado |
+| Registro inexistente | `404 Not Found` | El ID no existe |
+| Registro con dependencias | `409 Conflict` | No se puede eliminar por relaciones existentes |
+
+Pruebas realizadas:
+
+- `DELETE /api/clientes/1` devolvió `409 Conflict` cuando el cliente tenía proyectos asociados y `204 No Content` cuando quedó libre
+- `DELETE /api/empleados/1` devolvió `409 Conflict` con tareas asociadas y `204 No Content` después de eliminar la tarea relacionada
+- `DELETE /api/proyectos/2` devolvió `409 Conflict` al tener tareas asociadas
+- `DELETE /api/tareas/1` devolvió `204 No Content`
+- un segundo `DELETE /api/tareas/1` devolvió `404 Not Found`
+
+#### 14.3 Comprobación desde la interfaz web
+
+En la interfaz web se verificó el borrado desde los listados de clientes, empleados, proyectos y tareas:
+
+- si el registro no tiene relaciones, se elimina correctamente
+- si el registro tiene relaciones, se muestra un mensaje de error controlado
+- la aplicación no muestra `Whitelabel Error Page`
+- la aplicación no muestra error 500
+
+Mensajes comprobados en la web:
+
+- "No se puede eliminar el cliente porque tiene proyectos asociados. Elimina o reasigna primero sus proyectos."
+- "No se puede eliminar el empleado porque tiene tareas asignadas."
+- "No se puede eliminar el proyecto porque tiene tareas asociadas."
+- "Tarea eliminada correctamente."
+- "Empleado eliminado correctamente."
+- "Proyecto eliminado correctamente."
+- "Cliente eliminado correctamente."
 
 ---
 
@@ -425,6 +519,6 @@ Con este proyecto se aprende que verificar una aplicación no consiste solo en m
 
 Las pruebas ayudan a detectar errores antes de la entrega y permiten trabajar con más seguridad. También es importante separar las pruebas unitarias de las de integración, porque cada una revisa una parte distinta del proyecto.
 
-La depuración con IntelliJ también ayuda mucho a entender el flujo interno del programa, porque permite ver paso a paso qué hace cada método y cómo cambian los datos.
+La depuración con IntelliJ también ayuda mucho a entender el flujo interno del programa, porque permite ver paso a paso qué hace cada método y cómo cambian los datos. Además, la verificación final ha servido para detectar y corregir un error real de serialización en la API REST, y para comprobar que la eliminación de datos relacionados se gestiona de manera segura.
 
-Por todo esto, SmartFenix cumple el resultado de aprendizaje **RA3**, ya que el proyecto ha sido verificado mediante pruebas diseñadas y ejecutadas sobre el sistema.
+Por todo esto, SmartFenix cumple mejor el resultado de aprendizaje **RA3**, ya que el proyecto ha sido verificado mediante pruebas diseñadas y ejecutadas sobre el sistema, se han comprobado tanto casos normales como casos de error, y la aplicación gestiona correctamente las restricciones de base de datos. La eliminación de datos se realiza de forma segura y el sistema queda listo para entrega y demostración.

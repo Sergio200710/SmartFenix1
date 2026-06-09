@@ -1,7 +1,10 @@
 package com.smartfenix.service;
 
 import com.smartfenix.domain.Cliente;
+import com.smartfenix.exception.RegistroNoEncontradoException;
+import com.smartfenix.exception.RegistroRelacionadoException;
 import com.smartfenix.repository.ClienteRepository;
+import com.smartfenix.repository.ProyectoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ import java.util.Optional;
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final ProyectoRepository proyectoRepository;
 
     public List<Cliente> findAll() {
         return clienteRepository.findAll();
@@ -35,7 +39,17 @@ public class ClienteService {
         });
     }
 
+    public boolean tieneProyectosAsociados(Long clienteId) {
+        return proyectoRepository.existsByClienteId(clienteId);
+    }
+
     public void delete(Long id) {
+        if (!clienteRepository.existsById(id)) {
+            throw new RegistroNoEncontradoException("Cliente no encontrado.");
+        }
+        if (tieneProyectosAsociados(id)) {
+            throw new RegistroRelacionadoException("No se puede eliminar el cliente porque tiene proyectos asociados.");
+        }
         clienteRepository.deleteById(id);
     }
 }

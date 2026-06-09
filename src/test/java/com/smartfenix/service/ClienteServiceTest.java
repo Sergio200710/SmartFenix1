@@ -1,7 +1,9 @@
 package com.smartfenix.service;
 
 import com.smartfenix.domain.Cliente;
+import com.smartfenix.exception.RegistroRelacionadoException;
 import com.smartfenix.repository.ClienteRepository;
+import com.smartfenix.repository.ProyectoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +20,9 @@ public class ClienteServiceTest {
 
     @Mock
     private ClienteRepository clienteRepository;
+
+    @Mock
+    private ProyectoRepository proyectoRepository;
 
     @InjectMocks
     private ClienteService clienteService;
@@ -60,9 +65,26 @@ public class ClienteServiceTest {
     @Test
     public void testEliminarCliente() {
         Long id = 5L;
+        when(clienteRepository.existsById(id)).thenReturn(true);
+        when(proyectoRepository.existsByClienteId(id)).thenReturn(false);
 
         clienteService.delete(id);
 
         verify(clienteRepository).deleteById(id);
+    }
+
+    @Test
+    public void testNoEliminarClienteConProyectosAsociados() {
+        Long id = 7L;
+        when(clienteRepository.existsById(id)).thenReturn(true);
+        when(proyectoRepository.existsByClienteId(id)).thenReturn(true);
+
+        RegistroRelacionadoException exception = assertThrows(
+                RegistroRelacionadoException.class,
+                () -> clienteService.delete(id)
+        );
+
+        assertEquals("No se puede eliminar el cliente porque tiene proyectos asociados.", exception.getMessage());
+        verify(clienteRepository, never()).deleteById(id);
     }
 }
