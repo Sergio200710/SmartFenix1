@@ -82,7 +82,7 @@
           </div>
           <div class="card">
             <div class="eyebrow">Resultado de pruebas</div>
-            <div class="main">18 tests superados</div>
+            <div class="main">26 tests superados</div>
           </div>
         </div>
         <div class="highlight-grid" style="margin-top:16px;">
@@ -96,7 +96,7 @@
           <div class="box success">
             <h3>Resultado de pruebas</h3>
             <p><strong>BUILD SUCCESS</strong></p>
-            <p>Tests run: 18</p>
+            <p>Tests run: 26</p>
             <p>Failures: 0</p>
             <p>Errors: 0</p>
             <p>Skipped: 0</p>
@@ -308,9 +308,10 @@ mvn spring-boot:run</pre>
             <tr><th>Clase de test</th><th>Métodos comprobados</th><th>Qué verifica</th></tr>
           </thead>
           <tbody>
-            <tr><td><code>ClienteServiceTest</code></td><td><code>testCrearCliente</code>, <code>testListarClientes</code>, <code>testEliminarCliente</code></td><td>Guardado, listado y borrado de clientes.</td></tr>
-            <tr><td><code>EmpleadoServiceTest</code></td><td><code>testCrearEmpleado</code>, <code>testListarEmpleados</code>, <code>testEliminarEmpleado</code></td><td>Guardado, listado y borrado de empleados.</td></tr>
-            <tr><td><code>ProyectoServiceTest</code></td><td><code>testCrearProyecto</code>, <code>testListarProyectos</code>, <code>testActualizarProyecto</code></td><td>Creación, consulta y actualización de proyectos.</td></tr>
+            <tr><td><code>ClienteServiceTest</code></td><td><code>testCrearCliente</code>, <code>testListarClientes</code>, <code>testEliminarCliente</code>, <code>testNoEliminarClienteConProyectosAsociados</code></td><td>Guardado, listado, borrado correcto y bloqueo por proyectos asociados.</td></tr>
+            <tr><td><code>EmpleadoServiceTest</code></td><td><code>testCrearEmpleado</code>, <code>testListarEmpleados</code>, <code>testEliminarEmpleado</code>, <code>testNoEliminarEmpleadoConTareasAsociadas</code></td><td>Guardado, listado, borrado correcto y bloqueo por tareas asociadas.</td></tr>
+            <tr><td><code>ProyectoServiceTest</code></td><td><code>testCrearProyecto</code>, <code>testListarProyectos</code>, <code>testActualizarProyecto</code>, <code>testEliminarProyecto</code>, <code>testNoEliminarProyectoConTareasAsociadas</code></td><td>Creación, consulta, actualización y control de dependencias al borrar.</td></tr>
+            <tr><td><code>TareaServiceTest</code></td><td><code>testCrearTarea</code>, <code>testListarTareas</code>, <code>testEliminarTarea</code>, <code>testEliminarTareaNoExistente</code>, <code>testActualizarTarea</code></td><td>Alta, consulta, borrado, error controlado y actualización de tareas.</td></tr>
           </tbody>
         </table>
       </section>
@@ -318,7 +319,7 @@ mvn spring-boot:run</pre>
       <section class="section">
         <h2>Prueba de integración</h2>
         <div class="rule"></div>
-        <p class="intro">La prueba de integración comprueba que varias capas funcionan juntas dentro del contexto de Spring, usando H2 en memoria y MockMvc.</p>
+        <p class="intro">Las pruebas de integración comprueban que varias capas funcionan juntas dentro del contexto de Spring, usando H2 en memoria y MockMvc.</p>
         <div class="cols-2">
           <div class="box">
             <h3>Configuración</h3>
@@ -354,6 +355,11 @@ mvn spring-boot:run</pre>
             <tr><td><code>testListarEmpleadosDevuelveOk</code></td><td>Que <code>GET /api/empleados</code> responde correctamente.</td></tr>
             <tr><td><code>testCrearEmpleadoFlujoCompleto</code></td><td>Que se puede crear un empleado mediante <code>POST</code>.</td></tr>
             <tr><td><code>testConsultarEmpleadoInexistenteDevuelveNotFound</code></td><td>Que un ID inexistente devuelve <code>404</code>.</td></tr>
+            <tr><td><code>testEliminarEmpleadoConTareasDevuelveConflict</code></td><td>Que un empleado con tareas asociadas devuelve <code>409 Conflict</code>.</td></tr>
+            <tr><td><code>testListarClientesDevuelveOk</code></td><td>Que <code>GET /api/clientes</code> responde correctamente.</td></tr>
+            <tr><td><code>testCrearClienteDevuelveCreated</code></td><td>Que se puede crear un cliente mediante <code>POST</code>.</td></tr>
+            <tr><td><code>testConsultarClienteInexistenteDevuelveNotFound</code></td><td>Que un ID inexistente devuelve <code>404</code>.</td></tr>
+            <tr><td><code>testEliminarClienteConProyectosDevuelveConflict</code></td><td>Que un cliente con proyectos asociados devuelve <code>409 Conflict</code>.</td></tr>
           </tbody>
         </table>
       </section>
@@ -361,14 +367,15 @@ mvn spring-boot:run</pre>
       <section class="section">
         <h2>Depuración del sistema</h2>
         <div class="rule"></div>
-        <p class="intro">La depuración ayuda a entender el flujo interno del programa y a revisar cómo cambian los valores durante la ejecución.</p>
+        <p class="intro">La depuración ayuda a entender el flujo interno del programa y a revisar cómo cambian los valores durante la ejecución. El caso principal recomendado es la eliminación de un cliente con proyectos asociados.</p>
         <div class="steps-box">
           <ol>
-            <li>Poner un breakpoint en un método como <code>ClienteService.save(...)</code>, <code>ProyectoService.update(...)</code> o <code>EmpleadoService.update(...)</code>.</li>
-            <li>Ejecutar la aplicación o una prueba en modo <code>Debug</code>.</li>
+            <li>Poner breakpoints en <code>ClienteWebController.eliminar(...)</code> y <code>ClienteService.delete(...)</code>.</li>
+            <li>Arrancar la aplicación y entrar en <code>http://localhost:8099/clientes</code>.</li>
+            <li>Intentar eliminar un cliente con proyectos asociados.</li>
             <li>Avanzar paso a paso con <code>Step Over</code>.</li>
-            <li>Inspeccionar variables y objetos.</li>
-            <li>Comprobar cómo cambian los datos durante la ejecución.</li>
+            <li>Inspeccionar <code>id</code>, la comprobación de existencia, la comprobación de proyectos asociados y la excepción controlada.</li>
+            <li>Comprobar que la web muestra un mensaje controlado y no aparece error 500.</li>
           </ol>
         </div>
       </section>
@@ -386,7 +393,7 @@ mvn spring-boot:run</pre>
           <div class="box success">
             <h3>Resultado</h3>
             <p><strong>BUILD SUCCESS</strong></p>
-            <p>Tests run: 18</p>
+            <p>Tests run: 26</p>
             <p>Failures: 0</p>
             <p>Errors: 0</p>
             <p>Skipped: 0</p>

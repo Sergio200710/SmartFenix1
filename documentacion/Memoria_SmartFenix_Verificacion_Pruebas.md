@@ -303,9 +303,10 @@ Estas pruebas unitarias:
 
 | Clase de test | Métodos comprobados | Qué verifica |
 | --- | --- | --- |
-| `ClienteServiceTest` | `testCrearCliente`, `testListarClientes`, `testEliminarCliente` | Guardado, listado y borrado de clientes |
-| `EmpleadoServiceTest` | `testCrearEmpleado`, `testListarEmpleados`, `testEliminarEmpleado` | Guardado, listado y borrado de empleados |
-| `ProyectoServiceTest` | `testCrearProyecto`, `testListarProyectos`, `testActualizarProyecto` | Creación, consulta y actualización de proyectos |
+| `ClienteServiceTest` | `testCrearCliente`, `testListarClientes`, `testEliminarCliente`, `testNoEliminarClienteConProyectosAsociados` | Guardado, listado, borrado correcto y bloqueo por proyectos asociados |
+| `EmpleadoServiceTest` | `testCrearEmpleado`, `testListarEmpleados`, `testEliminarEmpleado`, `testNoEliminarEmpleadoConTareasAsociadas` | Guardado, listado, borrado correcto y bloqueo por tareas asociadas |
+| `ProyectoServiceTest` | `testCrearProyecto`, `testListarProyectos`, `testActualizarProyecto`, `testEliminarProyecto`, `testNoEliminarProyectoConTareasAsociadas` | Creación, consulta, actualización y control de dependencias al borrar |
+| `TareaServiceTest` | `testCrearTarea`, `testListarTareas`, `testEliminarTarea`, `testEliminarTareaNoExistente`, `testActualizarTarea` | Alta, consulta, borrado, error controlado y actualización de tareas |
 
 Estas pruebas comprueban la lógica de servicio y la llamada correcta al repositorio simulado.
 
@@ -319,9 +320,10 @@ Esquema de testing unitario:
 
 Una prueba de integración comprueba que varias capas del sistema funcionan juntas. No se limita a un único método aislado, sino que revisa el comportamiento del flujo completo entre controlador, servicio, repositorio y base de datos de pruebas.
 
-La clase de integración implementada es:
+Las clases de integración implementadas son:
 
 - `EmpleadoControllerIntegrationTest`
+- `ClienteControllerIntegrationTest`
 
 Herramientas y anotaciones usadas:
 
@@ -337,6 +339,11 @@ Herramientas y anotaciones usadas:
 | `testListarEmpleadosDevuelveOk` | Que `GET /api/empleados` responde correctamente |
 | `testCrearEmpleadoFlujoCompleto` | Que se puede crear un empleado mediante `POST` |
 | `testConsultarEmpleadoInexistenteDevuelveNotFound` | Que un ID inexistente devuelve `404` |
+| `testEliminarEmpleadoConTareasDevuelveConflict` | Que un empleado con tareas asociadas devuelve `409 Conflict` |
+| `testListarClientesDevuelveOk` | Que `GET /api/clientes` responde correctamente |
+| `testCrearClienteDevuelveCreated` | Que se puede crear un cliente mediante `POST` |
+| `testConsultarClienteInexistenteDevuelveNotFound` | Que un ID inexistente devuelve `404` |
+| `testEliminarClienteConProyectosDevuelveConflict` | Que un cliente con proyectos asociados devuelve `409 Conflict` |
 
 Flujo de integración:
 
@@ -356,20 +363,32 @@ Un **breakpoint** es un punto de parada que hace que la ejecución se detenga en
 
 Inspeccionar variables sirve para comprobar cómo cambian los datos a medida que se ejecuta el código.
 
-Métodos recomendados para depurar:
+Caso principal recomendado para depurar:
 
-- `ClienteService.save(...)`
-- `ProyectoService.update(...)`
-- `EmpleadoService.update(...)`
+- eliminación de un cliente con proyectos asociados
+
+Breakpoints recomendados:
+
+- `ClienteWebController.eliminar(...)`
+- `ClienteService.delete(...)`
+
+Variables a inspeccionar:
+
+- `id`
+- resultado de `clienteRepository.existsById(id)`
+- resultado de `tieneProyectosAsociados(id)`
+- excepción `RegistroRelacionadoException`
 
 Pasos básicos:
 
 1. abrir el proyecto en IntelliJ
-2. colocar un breakpoint en un método de servicio
-3. arrancar la aplicación o un test en modo Debug
-4. avanzar con Step Over
-5. inspeccionar variables
-6. comprobar cómo cambia el flujo
+2. arrancar la aplicación en `http://localhost:8099/dashboard`
+3. entrar en `http://localhost:8099/clientes`
+4. colocar breakpoints en `ClienteWebController.eliminar(...)` y `ClienteService.delete(...)`
+5. intentar eliminar un cliente con proyectos
+6. avanzar con `Step Over`
+7. inspeccionar variables y explicar por qué se bloquea el borrado
+8. mostrar que la web enseña un mensaje controlado y no aparece error 500
 
 ---
 
@@ -393,7 +412,7 @@ Resultado validado:
 
 ```text
 BUILD SUCCESS
-Tests run: 18
+Tests run: 26
 Failures: 0
 Errors: 0
 Skipped: 0

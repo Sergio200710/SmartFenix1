@@ -98,8 +98,11 @@ public class TareaWebController {
             return "tareas/formulario";
         }
         asignarRelaciones(tarea, proyectoId, empleadoId);
-        tareaService.update(id, tarea);
-        redirectAttributes.addFlashAttribute("mensaje", "Tarea actualizada correctamente.");
+        if (tareaService.update(id, tarea).isPresent()) {
+            redirectAttributes.addFlashAttribute("mensaje", "Tarea actualizada correctamente.");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Tarea no encontrada.");
+        }
         return "redirect:/tareas";
     }
 

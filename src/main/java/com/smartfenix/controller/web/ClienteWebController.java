@@ -74,8 +74,11 @@ public class ClienteWebController {
             model.addAttribute("modoEdicion", true);
             return "clientes/formulario";
         }
-        clienteService.update(id, cliente);
-        redirectAttributes.addFlashAttribute("mensaje", "Cliente actualizado correctamente.");
+        if (clienteService.update(id, cliente).isPresent()) {
+            redirectAttributes.addFlashAttribute("mensaje", "Cliente actualizado correctamente.");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Cliente no encontrado.");
+        }
         return "redirect:/clientes";
     }
 

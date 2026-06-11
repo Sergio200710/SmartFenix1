@@ -2,4 +2,5 @@
 /home/sergio/SmartFenix1/src/test/java/com/smartfenix/service/ClienteServiceTest.java
 /home/sergio/SmartFenix1/src/test/java/com/smartfenix/service/ProyectoServiceTest.java
 /home/sergio/SmartFenix1/src/test/java/com/smartfenix/service/TareaServiceTest.java
+/home/sergio/SmartFenix1/src/test/java/com/smartfenix/controller/ClienteControllerIntegrationTest.java
 /home/sergio/SmartFenix1/src/test/java/com/smartfenix/service/EmpleadoServiceTest.java

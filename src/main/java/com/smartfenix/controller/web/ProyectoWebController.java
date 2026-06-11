@@ -96,8 +96,11 @@ public class ProyectoWebController {
         } else {
             proyecto.setCliente(null);
         }
-        proyectoService.update(id, proyecto);
-        redirectAttributes.addFlashAttribute("mensaje", "Proyecto actualizado correctamente.");
+        if (proyectoService.update(id, proyecto).isPresent()) {
+            redirectAttributes.addFlashAttribute("mensaje", "Proyecto actualizado correctamente.");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Proyecto no encontrado.");
+        }
         return "redirect:/proyectos";
     }
 

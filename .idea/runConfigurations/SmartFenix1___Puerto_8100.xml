@@ -1,10 +1,13 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="SmartFenix1 Correcto" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="SmartFenix1 Puerto 8100" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UnknownPolicyInFreeMode" />
     <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.smartfenix.SmartFenixApplication" />
     <option name="WORKING_DIRECTORY" value="/home/sergio/SmartFenix1" />
+    <envs>
+      <env name="SERVER_PORT" value="8100" />
+    </envs>
     <module name="smartfenix-api" />
     <method v="2">
       <option name="Make" enabled="true" />

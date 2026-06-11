@@ -144,7 +144,9 @@ mvn spring-boot:run
 
 ### Arranque en IntelliJ IDEA
 
-Si quieres ejecutar el proyecto directamente desde IntelliJ, este es el orden recomendado:
+Una parte importante de este proyecto no ha sido solo programarlo, sino dejarlo preparado para que arranque de forma limpia y sin errores desde IntelliJ IDEA. Durante las pruebas finales comprobé que el fallo de arranque no estaba en Spring Boot, ni en MySQL, ni en el código Java, sino en que podía quedar alguna instancia antigua de Java ocupando el puerto `8099`. Por eso, además de revisar el código, dejé también controlado el proceso de ejecución.
+
+Si se quiere ejecutar el proyecto directamente desde IntelliJ, este es el orden más recomendable:
 
 1. Abrir la carpeta del proyecto:
 
@@ -181,13 +183,19 @@ Debe estar disponible:
 7. Ejecutar la configuración de IntelliJ que ya viene preparada en el proyecto:
 
 ```text
-SmartFenix1 - Correcta
+SmartFenix1 Correcto
 ```
 
-Esa configuración arranca la clase principal:
+Esta configuración está preparada para arrancar exactamente la clase principal correcta del proyecto:
 
 ```text
 com.smartfenix.SmartFenixApplication
+```
+
+Además, se ha dejado apuntando expresamente al directorio correcto del proyecto:
+
+```text
+/home/sergio/SmartFenix1
 ```
 
 8. Cuando arranque correctamente, la aplicación quedará disponible en:
@@ -201,10 +209,12 @@ En IntelliJ:
 
 - `Run -> Edit Configurations`
 - `+ -> Spring Boot`
-- nombre: `SmartFenix1 - Correcta`
+- nombre: `SmartFenix1 Correcto`
 - main class: `com.smartfenix.SmartFenixApplication`
-- working directory: `$PROJECT_DIR$`
+- working directory: `/home/sergio/SmartFenix1`
 - JDK: `21`
+
+Con esta configuración se evita uno de los errores más típicos cuando se trabaja con varias copias del mismo proyecto: arrancar una versión antigua sin darse cuenta o usar un directorio distinto al que realmente se está evaluando.
 
 #### Comprobación rápida después del arranque
 
@@ -219,13 +229,38 @@ Comprueba estas rutas:
 
 #### Si no arranca en IntelliJ
 
-Revisa estos puntos:
+Lo más recomendable es revisar estos puntos en este orden:
 
 - que Docker esté levantado
 - que MySQL esté en `3308`
 - que el SDK del proyecto sea `Java 21`
 - que Lombok y annotation processing estén activos
 - que el puerto `8099` no esté ocupado
+
+Si aun así falla, la mejor forma de descartar que IntelliJ esté lanzando mal el proyecto es probar primero desde terminal con:
+
+```bash
+mvn spring-boot:run
+```
+
+En la verificación final del proyecto este arranque funcionó correctamente, por lo que quedó demostrado que el problema no estaba en la aplicación, sino en una instancia antigua de Java que seguía usando el puerto `8099`.
+
+### Verificación final del arranque
+
+Después de limpiar procesos antiguos y dejar libre el puerto, el proyecto quedó comprobado en estas condiciones:
+
+- ruta real de ejecución: `/home/sergio/SmartFenix1`
+- clase principal: `com.smartfenix.SmartFenixApplication`
+- Java: `21`
+- puerto de la aplicación: `8099`
+- base de datos MySQL conectando correctamente
+- `mvn test` en verde
+- aplicación arrancando sin error de Tomcat
+
+El resultado final fue correcto y la aplicación quedó funcionando en:
+
+- `http://localhost:8099`
+- `http://localhost:8099/dashboard`
 
 ## 6. Interfaz web
 
@@ -350,33 +385,23 @@ Estas pruebas unitarias:
 - no usan Docker
 - no usan `@SpringBootTest`
 
-### ClienteServiceTest
+### Inventario real de pruebas unitarias
 
-- `testCrearCliente`: comprueba que un cliente puede guardarse correctamente y que el servicio llama al repositorio.
-- `testListarClientes`: comprueba que el servicio devuelve la lista esperada.
-- `testEliminarCliente`: comprueba que se llama a `deleteById` con el identificador correcto.
+- `ClienteServiceTest`: `testCrearCliente`, `testListarClientes`, `testEliminarCliente`, `testNoEliminarClienteConProyectosAsociados`
+- `EmpleadoServiceTest`: `testCrearEmpleado`, `testListarEmpleados`, `testEliminarEmpleado`, `testNoEliminarEmpleadoConTareasAsociadas`
+- `ProyectoServiceTest`: `testCrearProyecto`, `testListarProyectos`, `testActualizarProyecto`, `testEliminarProyecto`, `testNoEliminarProyectoConTareasAsociadas`
+- `TareaServiceTest`: `testCrearTarea`, `testListarTareas`, `testEliminarTarea`, `testEliminarTareaNoExistente`, `testActualizarTarea`
 
-### EmpleadoServiceTest
-
-- `testCrearEmpleado`: comprueba el guardado correcto de un empleado y la llamada al repositorio.
-- `testListarEmpleados`: verifica que se listan los empleados simulados.
-- `testEliminarEmpleado`: comprueba la eliminación por id mediante el repositorio mockeado.
-
-### ProyectoServiceTest
-
-- `testCrearProyecto`: valida la creación de un proyecto nuevo.
-- `testListarProyectos`: comprueba la consulta de varios proyectos.
-- `testActualizarProyecto`: valida que se actualizan correctamente los datos del proyecto y que se guarda el objeto esperado.
-
-En conjunto, estas pruebas comprueban la lógica de servicio y la interacción correcta con el repositorio simulado.
+En conjunto, estas pruebas comprueban la lógica de servicio, los casos normales y los casos de error controlado.
 
 ## 10. Prueba de integración
 
 Una prueba de integración comprueba que varias partes del sistema funcionan juntas. En lugar de revisar solo un método aislado, verifica el comportamiento del flujo completo entre varias capas.
 
-En SmartFenix, la prueba de integración principal está en la clase:
+En SmartFenix, las pruebas de integración implementadas están en estas clases:
 
 - `EmpleadoControllerIntegrationTest`
+- `ClienteControllerIntegrationTest`
 
 ### Tecnologías usadas
 
@@ -389,9 +414,14 @@ En SmartFenix, la prueba de integración principal está en la clase:
 
 ### Qué comprueba cada prueba
 
-- `testListarEmpleadosDevuelveOk`: comprueba que `GET /api/empleados` responde correctamente.
-- `testCrearEmpleadoFlujoCompleto`: comprueba que se puede crear un empleado mediante `POST`.
-- `testConsultarEmpleadoInexistenteDevuelveNotFound`: comprueba que un ID inexistente devuelve `404`.
+- `EmpleadoControllerIntegrationTest.testListarEmpleadosDevuelveOk`: comprueba que `GET /api/empleados` responde correctamente.
+- `EmpleadoControllerIntegrationTest.testCrearEmpleadoFlujoCompleto`: comprueba que se puede crear un empleado mediante `POST`.
+- `EmpleadoControllerIntegrationTest.testConsultarEmpleadoInexistenteDevuelveNotFound`: comprueba que un ID inexistente devuelve `404`.
+- `EmpleadoControllerIntegrationTest.testEliminarEmpleadoConTareasDevuelveConflict`: comprueba que un empleado con tareas asociadas devuelve `409 Conflict`.
+- `ClienteControllerIntegrationTest.testListarClientesDevuelveOk`: comprueba que `GET /api/clientes` responde correctamente.
+- `ClienteControllerIntegrationTest.testCrearClienteDevuelveCreated`: comprueba que se puede crear un cliente mediante `POST`.
+- `ClienteControllerIntegrationTest.testConsultarClienteInexistenteDevuelveNotFound`: comprueba que un ID inexistente devuelve `404`.
+- `ClienteControllerIntegrationTest.testEliminarClienteConProyectosDevuelveConflict`: comprueba que un cliente con proyectos asociados devuelve `409 Conflict`.
 
 ### Flujo de integración
 
@@ -419,7 +449,7 @@ mvn test
 
 ```text
 BUILD SUCCESS
-Tests run: 12
+Tests run: 26
 Failures: 0
 Errors: 0
 Skipped: 0
@@ -442,20 +472,32 @@ Un **breakpoint** es un punto de parada que hace que la ejecución se detenga en
 
 Inspeccionar variables sirve para comprobar cómo cambian los datos durante la ejecución.
 
-### Métodos recomendados para depurar
+### Caso principal recomendado para depurar
 
-- `ClienteService.save(...)`
-- `ProyectoService.update(...)`
-- `EmpleadoService.update(...)`
+El mejor caso para el vídeo es **eliminar un cliente con proyectos asociados**, porque demuestra controlador web, servicio, relación entre entidades y tratamiento de errores sin provocar un error 500.
+
+Breakpoints recomendados:
+
+- `ClienteWebController.eliminar(...)`
+- `ClienteService.delete(...)`
+
+Variables a inspeccionar:
+
+- `id`
+- resultado de `clienteRepository.existsById(id)`
+- resultado de `tieneProyectosAsociados(id)`
+- excepción `RegistroRelacionadoException`
 
 ### Pasos útiles para el vídeo
 
 1. abrir el proyecto en IntelliJ
-2. colocar un breakpoint en un método de servicio
-3. arrancar la aplicación o un test en modo Debug
-4. avanzar con Step Over
-5. inspeccionar variables
-6. explicar cómo cambia el flujo
+2. arrancar la aplicación en `http://localhost:8099/dashboard`
+3. entrar en `http://localhost:8099/clientes`
+4. colocar breakpoints en `ClienteWebController.eliminar(...)` y `ClienteService.delete(...)`
+5. pulsar eliminar sobre un cliente con proyectos
+6. avanzar con `Step Over`
+7. inspeccionar variables y explicar por qué no se permite el borrado
+8. mostrar que la web enseña un mensaje controlado y no aparece `Whitelabel Error Page`
 
 ## 13. Incidencias y soluciones
 
@@ -467,15 +509,27 @@ Solución: se revisó la documentación y se dejó una única versión coherente
 
 ### 2. Puerto 8099 ocupado
 
-Problema: podía quedar una instancia antigua de Java usando el puerto `8099`, lo que impedía arrancar la aplicación.
+Problema: en la fase final de pruebas se detectó que el proyecto podía fallar al arrancar aunque el código estuviera bien, simplemente porque quedaba una instancia antigua de Java usando el puerto `8099`. Esto provocaba errores del servidor embebido Tomcat al iniciar.
 
-Solución: comprobar el proceso con:
+Solución: localizar el proceso que estaba escuchando en ese puerto, cerrarlo y volver a arrancar la aplicación desde la copia correcta del proyecto. La comprobación puede hacerse con:
 
 ```bash
 lsof -i :8099
 ```
 
-y cerrar la instancia anterior.
+y, si hace falta, completar la revisión con herramientas como `ss` o `fuser` para asegurarse de que no queda ningún proceso antiguo activo.
+
+Una vez liberado el puerto, el proyecto arrancó correctamente desde:
+
+```text
+/home/sergio/SmartFenix1
+```
+
+y la aplicación quedó funcionando en:
+
+```text
+http://localhost:8099/dashboard
+```
 
 ### 3. Diferencia entre MySQL real y H2
 

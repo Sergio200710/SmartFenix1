@@ -74,8 +74,11 @@ public class EmpleadoWebController {
             model.addAttribute("modoEdicion", true);
             return "empleados/formulario";
         }
-        empleadoService.update(id, empleado);
-        redirectAttributes.addFlashAttribute("mensaje", "Empleado actualizado correctamente.");
+        if (empleadoService.update(id, empleado).isPresent()) {
+            redirectAttributes.addFlashAttribute("mensaje", "Empleado actualizado correctamente.");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Empleado no encontrado.");
+        }
         return "redirect:/empleados";
     }
 
